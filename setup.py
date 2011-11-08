@@ -14,11 +14,11 @@ sdl_module = Extension('SDL',
         extra_compile_args = ['-std=gnu99'],
         libraries = ['SDL'])
 
-setup(name = 'PySDL+',
+setup(name = 'PySDL2',
         version = '0.1',
         description = 'Python Bindings for SDL',
         author = 'Josh Holtrop',
-        author_email = 'jholtrop+pysdl@gmail.com',
+        author_email = 'jholtrop@gmail.com',
         ext_modules = [sdl_module],
         long_description = 'Python Bindings for SDL',
         license = 'GPL v2.0')
