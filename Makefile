@@ -6,3 +6,6 @@ install:
 
 test:
 	./tests/test-sdl
+
+clean:
+	-rm -rf build
