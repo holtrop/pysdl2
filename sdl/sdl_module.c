@@ -23,6 +23,15 @@ PYFUNC(sdl_init)
     return Py_BuildValue("i", rc);
 }
 
+PYFUNC(sdl_initsubsystem)
+{
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "I", &flags))
+        return NULL;
+    int rc = SDL_InitSubSystem(flags);
+    return Py_BuildValue("i", rc);
+}
+
 PYFUNC(sdl_quit)
 {
     SDL_Quit();
@@ -31,6 +40,7 @@ PYFUNC(sdl_quit)
 
 static PyMethodDef sdl_methods[] = {
     {"Init", sdl_init, METH_VARARGS, "Initialize PySDL"},
+    {"InitSubSystem", sdl_initsubsystem, METH_VARARGS, "Initialize subsystems"},
     {"Quit", sdl_quit, METH_VARARGS, "Uninitialize PySDL"},
     {NULL, NULL, 0, NULL}
 };
