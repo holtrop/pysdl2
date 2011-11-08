@@ -12,8 +12,9 @@
 #define MAKE_CONST(m, sym) _MAKE_CONST(m, SDL_, sym)
 #define MAKE_CONSTK(m, sym) _MAKE_CONST(m, SDL, sym)
 
-static PyObject *
-sdl_init(PyObject *self, PyObject *args)
+#define PYFUNC(name) static PyObject *name(PyObject *self, PyObject *args)
+
+PYFUNC(sdl_init)
 {
     Uint32 flags;
     if (!PyArg_ParseTuple(args, "I", &flags))
@@ -22,8 +23,16 @@ sdl_init(PyObject *self, PyObject *args)
     return Py_BuildValue("i", rc);
 }
 
+PYFUNC(sdl_quit)
+{
+    SDL_Quit();
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef sdl_methods[] = {
     {"Init", sdl_init, METH_VARARGS, "Initialize PySDL"},
+    {"Quit", sdl_quit, METH_VARARGS, "Uninitialize PySDL"},
+    {NULL, NULL, 0, NULL}
 };
 
 PyMODINIT_FUNC
