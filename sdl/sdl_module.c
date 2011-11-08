@@ -33,5 +33,12 @@ initSDL(void)
     if (md == NULL)
         return;
 
+    MAKE_CONST(md, INIT_TIMER);
     MAKE_CONST(md, INIT_VIDEO);
+    MAKE_CONST(md, INIT_AUDIO);
+    MAKE_CONST(md, INIT_CDROM);
+    MAKE_CONST(md, INIT_JOYSTICK);
+    MAKE_CONST(md, INIT_EVERYTHING);
+    MAKE_CONST(md, INIT_NOPARACHUTE);
+    MAKE_CONST(md, INIT_EVENTTHREAD);
 }
