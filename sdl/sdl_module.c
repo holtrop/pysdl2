@@ -15,7 +15,11 @@
 static PyObject *
 sdl_init(PyObject *self, PyObject *args)
 {
-    Py_RETURN_NONE;
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "I", &flags))
+        return NULL;
+    int rc = SDL_Init(flags);
+    return Py_BuildValue("i", rc);
 }
 
 static PyMethodDef sdl_methods[] = {
