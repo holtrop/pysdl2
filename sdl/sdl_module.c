@@ -14,7 +14,7 @@ static PyMethodDef sdl_methods[] = {
 };
 
 PyMODINIT_FUNC
-pysdl_module_init(void)
+initSDL(void)
 {
     PyObject *module = Py_InitModule(PYSDL_MODULE_NAME, sdl_methods);
 

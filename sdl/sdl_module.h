@@ -7,6 +7,6 @@
 #define PYSDL_MODULE_NAME "SDL"
 
 PyMODINIT_FUNC
-pysdl_module_init(void);
+initSDL(void);
 
 #endif /* SDL_MODULE_H */
