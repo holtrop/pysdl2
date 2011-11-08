@@ -47,11 +47,22 @@ PYFUNC(sdl_quitsubsystem)
     Py_RETURN_NONE;
 }
 
+PYFUNC(sdl_wasinit)
+{
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "I", &flags))
+        return NULL;
+    int rc = SDL_WasInit(flags);
+    return Py_BuildValue("i", rc);
+}
+
 static PyMethodDef sdl_methods[] = {
     {"Init", sdl_init, METH_VARARGS, "Initialize PySDL"},
     {"InitSubSystem", sdl_initsubsystem, METH_VARARGS, "Initialize subsystems"},
     {"Quit", sdl_quit, METH_VARARGS, "Uninitialize PySDL"},
     {"QuitSubSystem", sdl_quitsubsystem, METH_VARARGS, "Shut down a subsystem"},
+    {"WasInit", sdl_wasinit, METH_VARARGS,
+        "Check which subsystems are initialized"},
     {NULL, NULL, 0, NULL}
 };
 

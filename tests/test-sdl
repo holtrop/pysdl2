@@ -21,5 +21,7 @@ check_const('INIT_EVENTTHREAD')
 rc = SDL.Init(SDL.INIT_VIDEO)
 print 'SDL.Init() returns', rc
 
+print 'SDL.WasInit(SDL.INIT_VIDEO):', SDL.WasInit(SDL.INIT_VIDEO)
+
 print 'calling SDL.Quit()'
 SDL.Quit()
