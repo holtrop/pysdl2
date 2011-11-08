@@ -3,6 +3,15 @@
 #include <SDL/SDL.h>
 #include "sdl_module.h"
 
+#define _MAKE_CONST(m, pfx, sym) \
+    do { \
+        PyObject *io = PyInt_FromLong(pfx ## sym); \
+        PyDict_SetItemString((m), #sym, io); \
+        Py_DECREF(io); \
+    } while(0)
+#define MAKE_CONST(m, sym) _MAKE_CONST(m, SDL_, sym)
+#define MAKE_CONSTK(m, sym) _MAKE_CONST(m, SDL, sym)
+
 static PyObject *
 sdl_init(PyObject *self, PyObject *args)
 {
@@ -16,8 +25,10 @@ static PyMethodDef sdl_methods[] = {
 PyMODINIT_FUNC
 initSDL(void)
 {
-    PyObject *module = Py_InitModule(PYSDL_MODULE_NAME, sdl_methods);
+    PyObject *m = Py_InitModule(PYSDL_MODULE_NAME, sdl_methods);
 
-    if (module == NULL)
+    if (m == NULL)
         return;
+
+    MAKE_CONST(m, INIT_VIDEO);
 }
