@@ -9,4 +9,11 @@ import SDL
 def check_const(name):
     sys.stdout.write('%s: %d\n' % (name, getattr(SDL, name)))
 
+check_const('INIT_TIMER')
 check_const('INIT_VIDEO')
+check_const('INIT_AUDIO')
+check_const('INIT_CDROM')
+check_const('INIT_JOYSTICK')
+check_const('INIT_EVERYTHING')
+check_const('INIT_NOPARACHUTE')
+check_const('INIT_EVENTTHREAD')
