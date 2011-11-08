@@ -23,5 +23,7 @@ print 'SDL.Init() returns', rc
 
 print 'SDL.WasInit(SDL.INIT_VIDEO):', SDL.WasInit(SDL.INIT_VIDEO)
 
+print 'SDL.GetError():', SDL.GetError()
+
 print 'calling SDL.Quit()'
 SDL.Quit()

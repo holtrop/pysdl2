@@ -14,6 +14,14 @@
 
 #define PYFUNC(name) static PyObject *name(PyObject *self, PyObject *args)
 
+PYFUNC(sdl_geterror)
+{
+    char *s = SDL_GetError();
+    if (s == NULL)
+        Py_RETURN_NONE;
+    return Py_BuildValue("s", s);
+}
+
 PYFUNC(sdl_init)
 {
     Uint32 flags;
@@ -57,6 +65,7 @@ PYFUNC(sdl_wasinit)
 }
 
 static PyMethodDef sdl_methods[] = {
+    {"GetError", sdl_geterror, METH_VARARGS, "Get SDL error string"},
     {"Init", sdl_init, METH_VARARGS, "Initialize PySDL"},
     {"InitSubSystem", sdl_initsubsystem, METH_VARARGS, "Initialize subsystems"},
     {"Quit", sdl_quit, METH_VARARGS, "Uninitialize PySDL"},
