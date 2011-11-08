@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+import os
+import sys
+for d in filter(lambda x: x.startswith('lib.'), os.listdir('build')):
+    sys.path.append(os.path.sep.join([os.getcwd(), 'build', d]))
+import SDL
+
+def check_const(name):
+    sys.stdout.write('%s: %d\n' % (name, getattr(SDL, name)))
+
+check_const('INIT_VIDEO')

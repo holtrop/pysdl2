@@ -3,3 +3,6 @@ all:
 
 install:
 	python setup.py install
+
+test:
+	./tests/test-sdl
