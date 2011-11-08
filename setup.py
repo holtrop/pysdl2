@@ -11,7 +11,8 @@ def get_sources_from_dir(d):
 sdl_sources = get_sources_from_dir('sdl')
 sdl_module = Extension('SDL',
         sources = sdl_sources,
-        extra_compile_args = ['-std=gnu99'])
+        extra_compile_args = ['-std=gnu99'],
+        libraries = ['SDL'])
 
 setup(name = 'PySDL+',
         version = '0.1',
