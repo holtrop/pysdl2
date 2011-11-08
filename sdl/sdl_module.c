@@ -26,9 +26,12 @@ PyMODINIT_FUNC
 initSDL(void)
 {
     PyObject *m = Py_InitModule(PYSDL_MODULE_NAME, sdl_methods);
-
     if (m == NULL)
         return;
 
-    MAKE_CONST(m, INIT_VIDEO);
+    PyObject *md = PyModule_GetDict(m);
+    if (md == NULL)
+        return;
+
+    MAKE_CONST(md, INIT_VIDEO);
 }
