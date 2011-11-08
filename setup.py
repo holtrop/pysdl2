@@ -21,4 +21,4 @@ setup(name = 'PySDL2',
         author_email = 'jholtrop@gmail.com',
         ext_modules = [sdl_module],
         long_description = 'Python Bindings for SDL',
-        license = 'GPL v2.0')
+        license = 'LGPL v2.1')
