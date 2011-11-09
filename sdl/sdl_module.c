@@ -12,9 +12,11 @@
 #define MAKE_CONST(m, sym) _MAKE_CONST(m, SDL_, sym)
 #define MAKE_CONSTK(m, sym) _MAKE_CONST(m, SDL, sym)
 
-#define PYFUNC(name) static PyObject *name(PyObject *self, PyObject *args)
+#define PYFUNC(name, desc) \
+    static const char name ## _doc[] = desc; \
+    static PyObject *pysdl_ ## name(PyObject *self, PyObject *args)
 
-PYFUNC(sdl_geterror)
+PYFUNC(GetError, "Get SDL error string")
 {
     char *s = SDL_GetError();
     if (s == NULL)
@@ -22,7 +24,7 @@ PYFUNC(sdl_geterror)
     return Py_BuildValue("s", s);
 }
 
-PYFUNC(sdl_init)
+PYFUNC(Init, "Initialize PySDL")
 {
     Uint32 flags;
     if (!PyArg_ParseTuple(args, "I", &flags))
@@ -31,7 +33,7 @@ PYFUNC(sdl_init)
     return Py_BuildValue("i", rc);
 }
 
-PYFUNC(sdl_initsubsystem)
+PYFUNC(InitSubSystem, "Initialize subsystems")
 {
     Uint32 flags;
     if (!PyArg_ParseTuple(args, "I", &flags))
@@ -40,13 +42,13 @@ PYFUNC(sdl_initsubsystem)
     return Py_BuildValue("i", rc);
 }
 
-PYFUNC(sdl_quit)
+PYFUNC(Quit, "Uninitialize PySDL")
 {
     SDL_Quit();
     Py_RETURN_NONE;
 }
 
-PYFUNC(sdl_quitsubsystem)
+PYFUNC(QuitSubSystem, "Shut down a subsystem")
 {
     Uint32 flags;
     if (!PyArg_ParseTuple(args, "I", &flags))
@@ -55,7 +57,7 @@ PYFUNC(sdl_quitsubsystem)
     Py_RETURN_NONE;
 }
 
-PYFUNC(sdl_seterror)
+PYFUNC(SetError, "Set the SDL error string")
 {
     const char *s;
     if (!PyArg_ParseTuple(args, "s", &s))
@@ -64,7 +66,7 @@ PYFUNC(sdl_seterror)
     Py_RETURN_NONE;
 }
 
-PYFUNC(sdl_wasinit)
+PYFUNC(WasInit, "Check which subsystems are initialized")
 {
     Uint32 flags;
     if (!PyArg_ParseTuple(args, "I", &flags))
@@ -73,15 +75,15 @@ PYFUNC(sdl_wasinit)
     return Py_BuildValue("i", rc);
 }
 
+#define METH_REF(name) {#name, pysdl_ ## name, METH_VARARGS, name ## _doc}
 static PyMethodDef sdl_methods[] = {
-    {"GetError", sdl_geterror, METH_VARARGS, "Get SDL error string"},
-    {"Init", sdl_init, METH_VARARGS, "Initialize PySDL"},
-    {"InitSubSystem", sdl_initsubsystem, METH_VARARGS, "Initialize subsystems"},
-    {"Quit", sdl_quit, METH_VARARGS, "Uninitialize PySDL"},
-    {"QuitSubSystem", sdl_quitsubsystem, METH_VARARGS, "Shut down a subsystem"},
-    {"SetError", sdl_seterror, METH_VARARGS, "Set the SDL error string"},
-    {"WasInit", sdl_wasinit, METH_VARARGS,
-        "Check which subsystems are initialized"},
+    METH_REF(GetError),
+    METH_REF(Init),
+    METH_REF(InitSubSystem),
+    METH_REF(Quit),
+    METH_REF(QuitSubSystem),
+    METH_REF(SetError),
+    METH_REF(WasInit),
     {NULL, NULL, 0, NULL}
 };
 
