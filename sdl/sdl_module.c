@@ -13,6 +13,7 @@
 #define PYFUNC(name, desc) \
     static const char name ## _doc[] = desc; \
     static PyObject *pysdl_ ## name(PyObject *self, PyObject *args)
+#define PYFUNC_REF(name) {#name, pysdl_ ## name, METH_VARARGS, name ## _doc}
 
 PYFUNC(GetError, "Get SDL error string")
 {
@@ -73,15 +74,14 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
     return Py_BuildValue("i", rc);
 }
 
-#define METH_REF(name) {#name, pysdl_ ## name, METH_VARARGS, name ## _doc}
 static PyMethodDef sdl_methods[] = {
-    METH_REF(GetError),
-    METH_REF(Init),
-    METH_REF(InitSubSystem),
-    METH_REF(Quit),
-    METH_REF(QuitSubSystem),
-    METH_REF(SetError),
-    METH_REF(WasInit),
+    PYFUNC_REF(GetError),
+    PYFUNC_REF(Init),
+    PYFUNC_REF(InitSubSystem),
+    PYFUNC_REF(Quit),
+    PYFUNC_REF(QuitSubSystem),
+    PYFUNC_REF(SetError),
+    PYFUNC_REF(WasInit),
     {NULL, NULL, 0, NULL}
 };
 
