@@ -287,6 +287,9 @@ check_const('KMOD_SHIFT')
 check_const('KMOD_ALT')
 check_const('KMOD_META')
 
+ver = SDL.VERSION()
+print 'SDL Version: %d.%d.%d' % (ver['major'], ver['minor'], ver['patch'])
+
 rc = SDL.Init(SDL.INIT_VIDEO)
 print 'SDL.Init() returns', rc
 

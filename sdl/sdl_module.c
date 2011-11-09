@@ -69,6 +69,16 @@ PYFUNC(SetError, "Set the SDL error string")
     Py_RETURN_NONE;
 }
 
+PYFUNC(VERSION, "Retrieve compile-time version of the SDL library")
+{
+    SDL_version ver;
+    SDL_VERSION(&ver);
+    return Py_BuildValue("{s:i,s:i,s:i}",
+            "major", ver.major,
+            "minor", ver.minor,
+            "patch", ver.patch);
+}
+
 PYFUNC(WasInit, "Check which subsystems are initialized")
 {
     Uint32 flags;
@@ -87,6 +97,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(Quit),
     PYFUNC_REF(QuitSubSystem),
     PYFUNC_REF(SetError),
+    PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     {NULL, NULL, 0, NULL}
 };
