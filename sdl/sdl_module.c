@@ -4,6 +4,15 @@
 #include "pysdl.h"
 #include "sdl_module.h"
 
+PYFUNC(Error, "Set the SDL error message to one of several predefined strings.")
+{
+    int code;
+    if (!PyArg_ParseTuple(args, "i", &code))
+        return NULL;
+    SDL_Error(code);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(GetError, "Get SDL error string")
 {
     char *s = SDL_GetError();
@@ -64,6 +73,7 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 }
 
 static PyMethodDef sdl_methods[] = {
+    PYFUNC_REF(Error),
     PYFUNC_REF(GetError),
     PYFUNC_REF(Init),
     PYFUNC_REF(InitSubSystem),
