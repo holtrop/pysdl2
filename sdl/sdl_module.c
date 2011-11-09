@@ -4,6 +4,12 @@
 #include "pysdl.h"
 #include "sdl_module.h"
 
+PYFUNC(ClearError, "Clear the current SDL error")
+{
+    SDL_ClearError();
+    Py_RETURN_NONE;
+}
+
 PYFUNC(Error, "Set the SDL error message to one of several predefined strings.")
 {
     int code;
@@ -73,6 +79,7 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 }
 
 static PyMethodDef sdl_methods[] = {
+    PYFUNC_REF(ClearError),
     PYFUNC_REF(Error),
     PYFUNC_REF(GetError),
     PYFUNC_REF(Init),
