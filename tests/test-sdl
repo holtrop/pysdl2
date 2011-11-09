@@ -18,6 +18,13 @@ check_const('INIT_EVERYTHING')
 check_const('INIT_NOPARACHUTE')
 check_const('INIT_EVENTTHREAD')
 
+check_const('ENOMEM')
+check_const('EFREAD')
+check_const('EFWRITE')
+check_const('EFSEEK')
+check_const('UNSUPPORTED')
+check_const('LASTERROR')
+
 rc = SDL.Init(SDL.INIT_VIDEO)
 print 'SDL.Init() returns', rc
 
