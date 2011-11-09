@@ -7,7 +7,7 @@ for d in filter(lambda x: x.startswith('lib.'), os.listdir('build')):
 import SDL
 
 def check_const(name):
-    sys.stdout.write('%s: %d\n' % (name, getattr(SDL, name)))
+    return getattr(SDL, name)
 
 check_const('INIT_TIMER')
 check_const('INIT_VIDEO')
