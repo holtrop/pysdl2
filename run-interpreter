@@ -1,0 +1,3 @@
+#!/bin/sh
+export PYTHONPATH=$(ls -d build/lib*)
+exec python -ic 'import SDL'
