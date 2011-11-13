@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 #include "pysdl.h"
 #include "sdl_module.h"
+#include "VersionInfo.h"
 
 PYFUNC(ClearError, "Clear the current SDL error")
 {
@@ -390,4 +391,11 @@ initSDL(void)
     MAKE_PY_CONST(md, "KMOD_SHIFT", KMOD_SHIFT);
     MAKE_PY_CONST(md, "KMOD_ALT", KMOD_ALT);
     MAKE_PY_CONST(md, "KMOD_META", KMOD_META);
+
+    sdl_VersionInfoType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&sdl_VersionInfoType) < 0)
+        return;
+
+    Py_INCREF(&sdl_VersionInfoType);
+    PyModule_AddObject(m, "VersionInfo", (PyObject *) &sdl_VersionInfoType);
 }
