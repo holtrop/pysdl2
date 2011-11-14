@@ -21,7 +21,7 @@ sdl_VersionInfo_init(sdl_VersionInfo *self, PyObject *args, PyObject *kwargs)
 PyTypeObject sdl_VersionInfoType = {
     PyObject_HEAD_INIT(NULL)
     0,                              /* ob_size */
-    "sdl.VersionInfo",              /* tp_name */
+    "SDL.VersionInfo",              /* tp_name */
     sizeof(sdl_VersionInfo),        /* tp_basicsize */
     0,                              /* tp_itemsize */
     0,                              /* tp_dealloc */
