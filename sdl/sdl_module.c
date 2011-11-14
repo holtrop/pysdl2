@@ -5,6 +5,21 @@
 #include "sdl_module.h"
 #include "VersionInfo.h"
 
+static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
+{
+    PyObject *lst = Py_BuildValue("()");
+    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
+            "major", ver->major,
+            "minor", ver->minor,
+            "patch", ver->patch);
+    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
+            lst,
+            dict);
+    Py_DECREF(dict);
+    Py_DECREF(lst);
+    return ver_obj;
+}
+
 PYFUNC(ClearError, "Clear the current SDL error")
 {
     SDL_ClearError();
@@ -50,17 +65,7 @@ PYFUNC(Linked_Version,
         "Retrieve the version of the dynamically linked SDL library")
 {
     const SDL_version *ver = SDL_Linked_Version();
-    PyObject *lst = Py_BuildValue("()");
-    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
-            "major", ver->major,
-            "minor", ver->minor,
-            "patch", ver->patch);
-    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
-            lst,
-            dict);
-    Py_DECREF(dict);
-    Py_DECREF(lst);
-    return ver_obj;
+    return VersionInfoFromSDL_version(ver);
 }
 
 PYFUNC(Quit, "Uninitialize PySDL")
@@ -91,17 +96,7 @@ PYFUNC(VERSION, "Retrieve compile-time version of the SDL library")
 {
     SDL_version ver;
     SDL_VERSION(&ver);
-    PyObject *lst = Py_BuildValue("()");
-    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
-            "major", ver.major,
-            "minor", ver.minor,
-            "patch", ver.patch);
-    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
-            lst,
-            dict);
-    Py_DECREF(dict);
-    Py_DECREF(lst);
-    return ver_obj;
+    return VersionInfoFromSDL_version(&ver);
 }
 
 PYFUNC(WasInit, "Check which subsystems are initialized")
