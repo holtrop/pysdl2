@@ -394,7 +394,10 @@ initSDL(void)
 
     sdl_VersionInfoType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&sdl_VersionInfoType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_VersionInfoType\n");
         return;
+    }
 
     Py_INCREF(&sdl_VersionInfoType);
     PyModule_AddObject(m, "VersionInfo", (PyObject *) &sdl_VersionInfoType);
