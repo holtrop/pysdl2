@@ -8,6 +8,16 @@ static PyMemberDef sdl_VersionInfo_members[] = {
     {NULL}
 };
 
+static int
+sdl_VersionInfo_init(sdl_VersionInfo *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = {"major", "minor", "patch", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii", kwlist,
+                &self->major, &self->minor, &self->patch))
+        return -1;
+    return 0;
+}
+
 PyTypeObject sdl_VersionInfoType = {
     PyObject_HEAD_INIT(NULL)
     0,                              /* ob_size */
@@ -45,19 +55,7 @@ PyTypeObject sdl_VersionInfoType = {
     0,                              /* tp_descr_get */
     0,                              /* tp_descr_set */
     0,                              /* tp_dictoffset */
-    0,                              /* tp_init */
+    (initproc)sdl_VersionInfo_init, /* tp_init */
     0,                              /* tp_alloc */
-    sdl_VersionInfo_new,            /* tp_new */
+    0,                              /* tp_new */
 };
-
-PyObject *
-sdl_VersionInfo_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
-{
-    sdl_VersionInfo *self = (sdl_VersionInfo *) type->tp_alloc(type, 0);
-    if (self != NULL)
-    {
-        printf("GOT HERE\n");
-    }
-
-    return (PyObject *) self;
-}
