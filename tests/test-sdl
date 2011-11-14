@@ -298,6 +298,11 @@ print 'SDL.Init() returns', rc
 
 print 'SDL.WasInit(SDL.INIT_VIDEO):', SDL.WasInit(SDL.INIT_VIDEO)
 
+print 'Setting an out-of-memory error'
+SDL.Error(SDL.ENOMEM);
+print 'SDL.GetError():', SDL.GetError()
+print 'Clearing error'
+SDL.ClearError()
 print 'SDL.GetError():', SDL.GetError()
 
 print 'calling SDL.Quit()'
