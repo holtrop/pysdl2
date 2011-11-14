@@ -46,6 +46,23 @@ PYFUNC(InitSubSystem, "Initialize subsystems")
     return Py_BuildValue("i", rc);
 }
 
+PYFUNC(Linked_Version,
+        "Retrieve the version of the dynamically linked SDL library")
+{
+    const SDL_version *ver = SDL_Linked_Version();
+    PyObject *lst = Py_BuildValue("()");
+    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
+            "major", ver->major,
+            "minor", ver->minor,
+            "patch", ver->patch);
+    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
+            lst,
+            dict);
+    Py_DECREF(dict);
+    Py_DECREF(lst);
+    return ver_obj;
+}
+
 PYFUNC(Quit, "Uninitialize PySDL")
 {
     SDL_Quit();
@@ -102,6 +119,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetError),
     PYFUNC_REF(Init),
     PYFUNC_REF(InitSubSystem),
+    PYFUNC_REF(Linked_Version),
     PYFUNC_REF(Quit),
     PYFUNC_REF(QuitSubSystem),
     PYFUNC_REF(SetError),
