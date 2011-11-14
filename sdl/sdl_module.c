@@ -74,10 +74,17 @@ PYFUNC(VERSION, "Retrieve compile-time version of the SDL library")
 {
     SDL_version ver;
     SDL_VERSION(&ver);
-    return Py_BuildValue("{s:i,s:i,s:i}",
+    PyObject *lst = Py_BuildValue("()");
+    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
             "major", ver.major,
             "minor", ver.minor,
             "patch", ver.patch);
+    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
+            lst,
+            dict);
+    Py_DECREF(dict);
+    Py_DECREF(lst);
+    return ver_obj;
 }
 
 PYFUNC(WasInit, "Check which subsystems are initialized")
