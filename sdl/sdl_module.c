@@ -3,6 +3,7 @@
 #include "pysdl.h"
 #include "sdl_module.h"
 #include "VersionInfo.h"
+#include "Color.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -427,6 +428,7 @@ initSDL(void)
     MAKE_PY_CONST(md, "SWSURFACE", SDL_SWSURFACE);
     MAKE_PY_CONST(md, "PREALLOC", SDL_PREALLOC);
 
+    /* create sdl_VersionInfoType type */
     if (PyType_Ready(&sdl_VersionInfoType) < 0)
     {
         fprintf(stderr, "Error initializing sdl_VersionInfoType\n");
@@ -435,4 +437,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_VersionInfoType);
     PyModule_AddObject(m, "VersionInfo", (PyObject *) &sdl_VersionInfoType);
+
+    /* create sdl_ColorType type */
+    if (PyType_Ready(&sdl_ColorType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_ColorType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_ColorType);
+    PyModule_AddObject(m, "Color", (PyObject *) &sdl_ColorType);
 }
