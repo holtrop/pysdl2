@@ -8,6 +8,7 @@
 #include "Palette.h"
 #include "PixelFormat.h"
 #include "VideoInfo.h"
+#include "Surface.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -491,4 +492,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_VideoInfoType);
     PyModule_AddObject(m, "VideoInfo", (PyObject *) &sdl_VideoInfoType);
+
+    /* create sdl_SurfaceType type */
+    if (PyType_Ready(&sdl_SurfaceType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_SurfaceType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_SurfaceType);
+    PyModule_AddObject(m, "Surface", (PyObject *) &sdl_SurfaceType);
 }
