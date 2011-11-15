@@ -6,6 +6,7 @@
 #include "Color.h"
 #include "Rect.h"
 #include "Palette.h"
+#include "PixelFormat.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -469,4 +470,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_PaletteType);
     PyModule_AddObject(m, "Palette", (PyObject *) &sdl_PaletteType);
+
+    /* create sdl_PixelFormatType type */
+    if (PyType_Ready(&sdl_PixelFormatType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_PixelFormatType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_PixelFormatType);
+    PyModule_AddObject(m, "PixelFormat", (PyObject *) &sdl_PixelFormatType);
 }
