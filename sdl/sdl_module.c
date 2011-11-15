@@ -5,6 +5,7 @@
 #include "VersionInfo.h"
 #include "Color.h"
 #include "Rect.h"
+#include "Palette.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -458,4 +459,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_RectType);
     PyModule_AddObject(m, "Rect", (PyObject *) &sdl_RectType);
+
+    /* create sdl_PaletteType type */
+    if (PyType_Ready(&sdl_PaletteType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_PaletteType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_PaletteType);
+    PyModule_AddObject(m, "Palette", (PyObject *) &sdl_PaletteType);
 }
