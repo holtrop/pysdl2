@@ -7,6 +7,7 @@
 #include "Rect.h"
 #include "Palette.h"
 #include "PixelFormat.h"
+#include "VideoInfo.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -480,4 +481,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_PixelFormatType);
     PyModule_AddObject(m, "PixelFormat", (PyObject *) &sdl_PixelFormatType);
+
+    /* create sdl_VideoInfoType type */
+    if (PyType_Ready(&sdl_VideoInfoType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_VideoInfoType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_VideoInfoType);
+    PyModule_AddObject(m, "VideoInfo", (PyObject *) &sdl_VideoInfoType);
 }
