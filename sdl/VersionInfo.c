@@ -57,5 +57,5 @@ PyTypeObject sdl_VersionInfoType = {
     0,                              /* tp_dictoffset */
     (initproc)sdl_VersionInfo_init, /* tp_init */
     0,                              /* tp_alloc */
-    0,                              /* tp_new */
+    PyType_GenericNew,              /* tp_new */
 };

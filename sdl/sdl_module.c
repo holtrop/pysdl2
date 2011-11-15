@@ -427,7 +427,6 @@ initSDL(void)
     MAKE_PY_CONST(md, "SWSURFACE", SDL_SWSURFACE);
     MAKE_PY_CONST(md, "PREALLOC", SDL_PREALLOC);
 
-    sdl_VersionInfoType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&sdl_VersionInfoType) < 0)
     {
         fprintf(stderr, "Error initializing sdl_VersionInfoType\n");
