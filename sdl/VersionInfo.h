@@ -3,13 +3,12 @@
 #define VERSIONINFO_H
 
 #include <Python.h>
+#include <pysdl.h>
 #include <structmember.h>
 
 typedef struct {
     PyObject_HEAD
-    long major;
-    long minor;
-    long patch;
+    SDL_version ver;
 } sdl_VersionInfo;
 
 extern PyTypeObject sdl_VersionInfoType;

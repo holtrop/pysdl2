@@ -1,6 +1,5 @@
 
 #include <Python.h>
-#include <SDL/SDL.h>
 #include "pysdl.h"
 #include "sdl_module.h"
 #include "VersionInfo.h"

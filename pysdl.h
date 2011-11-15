@@ -1,4 +1,6 @@
 
+#include <SDL/SDL.h>
+
 #define MAKE_PY_CONST(m, name, sym) \
     do { \
         PyObject *io = PyInt_FromLong(sym); \

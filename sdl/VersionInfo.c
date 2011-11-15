@@ -2,9 +2,9 @@
 #include "VersionInfo.h"
 
 static PyMemberDef sdl_VersionInfo_members[] = {
-    {"major", T_INT, offsetof(sdl_VersionInfo, major), 0, "major"},
-    {"minor", T_INT, offsetof(sdl_VersionInfo, minor), 0, "minor"},
-    {"patch", T_INT, offsetof(sdl_VersionInfo, patch), 0, "patch"},
+    {"major", T_UBYTE, offsetof(sdl_VersionInfo, ver.major), 0, "major"},
+    {"minor", T_UBYTE, offsetof(sdl_VersionInfo, ver.minor), 0, "minor"},
+    {"patch", T_UBYTE, offsetof(sdl_VersionInfo, ver.patch), 0, "patch"},
     {NULL}
 };
 
@@ -13,7 +13,7 @@ sdl_VersionInfo_init(sdl_VersionInfo *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"major", "minor", "patch", NULL};
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii", kwlist,
-                &self->major, &self->minor, &self->patch))
+                &self->ver.major, &self->ver.minor, &self->ver.patch))
         return -1;
     return 0;
 }
