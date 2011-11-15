@@ -4,6 +4,7 @@
 #include "sdl_module.h"
 #include "VersionInfo.h"
 #include "Color.h"
+#include "Rect.h"
 
 static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
 {
@@ -447,4 +448,14 @@ initSDL(void)
 
     Py_INCREF(&sdl_ColorType);
     PyModule_AddObject(m, "Color", (PyObject *) &sdl_ColorType);
+
+    /* create sdl_RectType type */
+    if (PyType_Ready(&sdl_RectType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_RectType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_RectType);
+    PyModule_AddObject(m, "Rect", (PyObject *) &sdl_RectType);
 }
