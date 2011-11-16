@@ -13,7 +13,7 @@ static int
 sdl_Rect_init(sdl_Rect *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"x", "y", "w", "h", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiii", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiii", kwlist,
                 &self->rect.x, &self->rect.y, &self->rect.w, &self->rect.h))
         return -1;
     return 0;

@@ -12,7 +12,7 @@ static int
 sdl_Color_init(sdl_Color *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"r", "g", "b", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iii", kwlist,
                 &self->color.r, &self->color.g, &self->color.b))
         return -1;
     return 0;

@@ -12,7 +12,7 @@ static int
 sdl_VersionInfo_init(sdl_VersionInfo *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"major", "minor", "patch", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iii", kwlist,
                 &self->ver.major, &self->ver.minor, &self->ver.patch))
         return -1;
     return 0;
