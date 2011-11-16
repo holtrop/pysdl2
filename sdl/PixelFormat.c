@@ -49,6 +49,7 @@ sdl_PixelFormat_init(sdl_PixelFormat *self, PyObject *args, PyObject *kwargs)
                 &self->pf.Bmask, &self->pf.Amask,
                 &self->pf.colorkey, &self->pf.alpha))
         return -1;
+    Py_INCREF(self->palette);
     return 0;
 }
 

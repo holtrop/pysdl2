@@ -15,6 +15,7 @@ sdl_Palette_init(sdl_Palette *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO", kwlist,
                 &self->ncolors, &self->colors))
         return -1;
+    Py_INCREF(self->colors);
     return 0;
 }
 

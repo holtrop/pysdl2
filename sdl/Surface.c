@@ -31,6 +31,8 @@ sdl_Surface_init(sdl_Surface *self, PyObject *args, PyObject *kwargs)
                 &self->clip_rect, &self->surface.refcount))
         return -1;
     self->pixels = (PyObject *) self;
+    Py_INCREF(self->format);
+    Py_INCREF(self->clip_rect);
     return 0;
 }
 

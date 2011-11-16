@@ -45,6 +45,7 @@ sdl_VideoInfo_init(sdl_VideoInfo *self, PyObject *args, PyObject *kwargs)
                 &self->blit_fill, &self->video_mem, &self->vfmt,
                 &self->current_w, &self->current_h))
         return -1;
+    Py_INCREF(self->vfmt);
     return 0;
 }
 
