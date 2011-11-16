@@ -1,5 +1,6 @@
 
 #include "VideoInfo.h"
+#include "PixelFormat.h"
 
 static PyMemberDef sdl_VideoInfo_members[] = {
     {"hw_available", T_BOOL, offsetof(sdl_VideoInfo, hw_available), 0,
@@ -88,3 +89,19 @@ PyTypeObject sdl_VideoInfoType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_VideoInfo_from_SDL_VideoInfo(SDL_VideoInfo *vi)
+{
+    PyObject *vfmt = sdl_PixelFormat_from_SDL_PixelFormat(vi->vfmt);
+    PyObject *args = Py_BuildValue("iiiiiiiiIOii",
+            vi->hw_available, vi->wm_available,
+            vi->blit_hw, vi->blit_hw_CC, vi->blit_hw_A,
+            vi->blit_sw, vi->blit_sw_CC, vi->blit_sw_A,
+            vi->video_mem, vfmt,
+            vi->current_w, vi->current_h);
+    PyObject *sdl_vi = PyObject_CallObject((PyObject *) &sdl_VideoInfoType,
+            args);
+    Py_DECREF(args);
+    Py_DECREF(vfmt);
+    return sdl_vi;
+}

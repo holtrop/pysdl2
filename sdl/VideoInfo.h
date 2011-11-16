@@ -26,4 +26,6 @@ typedef struct
 
 extern PyTypeObject sdl_VideoInfoType;
 
+PyObject *sdl_VideoInfo_from_SDL_VideoInfo(SDL_VideoInfo *vi);
+
 #endif /* VIDEOINFO_H */
