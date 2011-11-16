@@ -1,5 +1,6 @@
 
 #include "PixelFormat.h"
+#include "Palette.h"
 
 static PyMemberDef sdl_PixelFormat_members[] = {
     {"palette", T_OBJECT_EX, offsetof(sdl_PixelFormat, palette), 0,
@@ -92,3 +93,20 @@ PyTypeObject sdl_PixelFormatType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf)
+{
+    PyObject *palette = sdl_Palette_from_SDL_Palette(pf->palette);
+    PyObject *args = Py_BuildValue("Oiiiiiiiiiiiiiiii",
+            palette, pf->BitsPerPixel, pf->BytesPerPixel,
+            pf->Rloss, pf->Gloss, pf->Bloss, pf->Aloss,
+            pf->Rshift, pf->Gshift, pf->Bshift, pf->Ashift,
+            pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask,
+            pf->colorkey, pf->alpha);
+    PyObject *pixelformat = PyObject_CallObject(
+            (PyObject *) &sdl_PixelFormatType,
+            args);
+    Py_DECREF(args);
+    Py_DECREF(palette);
+    return pixelformat;
+}

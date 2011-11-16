@@ -15,4 +15,6 @@ typedef struct
 
 extern PyTypeObject sdl_PixelFormatType;
 
+PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf);
+
 #endif /* PIXELFORMAT_H */
