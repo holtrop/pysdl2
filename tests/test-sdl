@@ -321,5 +321,9 @@ print 'Clearing error'
 SDL.ClearError()
 print 'SDL.GetError():', SDL.GetError()
 
+vi = SDL.GetVideoInfo()
+print 'Current video size %dx%d, %d bpp' % (vi.current_w, vi.current_h,
+        vi.vfmt.BitsPerPixel)
+
 print 'calling SDL.Quit()'
 SDL.Quit()
