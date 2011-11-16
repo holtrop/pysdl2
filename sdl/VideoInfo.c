@@ -38,7 +38,7 @@ sdl_VideoInfo_init(sdl_VideoInfo *self, PyObject *args, PyObject *kwargs)
         "current_w", "current_h",
         NULL
     };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiiiiiiiiiOii", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiiiiiiiIOii", kwlist,
                 &self->hw_available, &self->wm_available,
                 &self->blit_hw, &self->blit_hw_CC, &self->blit_hw_A,
                 &self->blit_sw, &self->blit_sw_CC, &self->blit_sw_A,
