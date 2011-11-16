@@ -4,8 +4,7 @@
 #define MAKE_PY_CONST(m, name, sym) \
     do { \
         PyObject *io = PyInt_FromLong(sym); \
-        PyDict_SetItemString((m), (name), io); \
-        Py_DECREF(io); \
+        PyModule_AddObject((m), (name), io); \
     } while(0)
 
 #define PYFUNC(name, desc) \
