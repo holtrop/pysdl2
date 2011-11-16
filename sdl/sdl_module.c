@@ -104,6 +104,12 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(GetVideoInfo, "return information about current video hardware")
+{
+    const SDL_VideoInfo *vi = SDL_GetVideoInfo();
+    return sdl_VideoInfo_from_SDL_VideoInfo(vi);
+}
+
 PYFUNC(GetVideoSurface, "return the current display surface")
 {
     SDL_Surface *surf = SDL_GetVideoSurface();
@@ -127,6 +133,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     /* Video */
+    PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     {NULL, NULL, 0, NULL}
 };

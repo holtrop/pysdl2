@@ -90,7 +90,7 @@ PyTypeObject sdl_VideoInfoType = {
     PyType_GenericNew,              /* tp_new */
 };
 
-PyObject *sdl_VideoInfo_from_SDL_VideoInfo(SDL_VideoInfo *vi)
+PyObject *sdl_VideoInfo_from_SDL_VideoInfo(const SDL_VideoInfo *vi)
 {
     if (vi == NULL)
         Py_RETURN_NONE;
