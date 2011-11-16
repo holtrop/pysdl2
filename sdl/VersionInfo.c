@@ -60,6 +60,19 @@ PyTypeObject sdl_VersionInfoType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_VersionInfo_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_VersionInfoType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_VersionInfoType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_VersionInfoType);
+    PyModule_AddObject(module, "VersionInfo",
+            (PyObject *) &sdl_VersionInfoType);
+}
+
 PyObject *sdl_VersionInfo_from_SDL_VersionInfo(const SDL_version *ver)
 {
     if (ver == NULL)

@@ -91,6 +91,18 @@ PyTypeObject sdl_VideoInfoType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_VideoInfo_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_VideoInfoType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_VideoInfoType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_VideoInfoType);
+    PyModule_AddObject(module, "VideoInfo", (PyObject *) &sdl_VideoInfoType);
+}
+
 PyObject *sdl_VideoInfo_from_SDL_VideoInfo(const SDL_VideoInfo *vi)
 {
     if (vi == NULL)

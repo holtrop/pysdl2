@@ -163,6 +163,18 @@ PyTypeObject sdl_SurfaceType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_Surface_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_SurfaceType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_SurfaceType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_SurfaceType);
+    PyModule_AddObject(module, "Surface", (PyObject *) &sdl_SurfaceType);
+}
+
 PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
 {
     if (surface == NULL)

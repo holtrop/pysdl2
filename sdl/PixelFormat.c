@@ -95,6 +95,19 @@ PyTypeObject sdl_PixelFormatType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_PixelFormat_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_PixelFormatType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_PixelFormatType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_PixelFormatType);
+    PyModule_AddObject(module, "PixelFormat",
+            (PyObject *) &sdl_PixelFormatType);
+}
+
 PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf)
 {
     if (pf == NULL)

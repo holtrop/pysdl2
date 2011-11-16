@@ -60,6 +60,18 @@ PyTypeObject sdl_ColorType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_Color_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_ColorType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_ColorType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_ColorType);
+    PyModule_AddObject(module, "Color", (PyObject *) &sdl_ColorType);
+}
+
 PyObject *sdl_Color_from_SDL_Color(SDL_Color *color)
 {
     if (color == NULL)

@@ -61,6 +61,18 @@ PyTypeObject sdl_RectType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_Rect_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_RectType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_RectType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_RectType);
+    PyModule_AddObject(module, "Rect", (PyObject *) &sdl_RectType);
+}
+
 PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect)
 {
     if (rect == NULL)

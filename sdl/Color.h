@@ -12,8 +12,7 @@ typedef struct
     SDL_Color color;
 } sdl_Color;
 
-extern PyTypeObject sdl_ColorType;
-
+void sdl_Color_register_type(PyObject *module);
 PyObject *sdl_Color_from_SDL_Color(SDL_Color *color);
 
 #endif /* COLOR_H */

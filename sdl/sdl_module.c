@@ -443,73 +443,17 @@ initSDL(void)
     MAKE_PY_CONST(md, "SWSURFACE", SDL_SWSURFACE);
     MAKE_PY_CONST(md, "PREALLOC", SDL_PREALLOC);
 
-    /* create sdl_VersionInfoType type */
-    if (PyType_Ready(&sdl_VersionInfoType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_VersionInfoType\n");
-        return;
-    }
+    sdl_VersionInfo_register_type(m);
 
-    Py_INCREF(&sdl_VersionInfoType);
-    PyModule_AddObject(m, "VersionInfo", (PyObject *) &sdl_VersionInfoType);
+    sdl_Color_register_type(m);
 
-    /* create sdl_ColorType type */
-    if (PyType_Ready(&sdl_ColorType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_ColorType\n");
-        return;
-    }
+    sdl_Rect_register_type(m);
 
-    Py_INCREF(&sdl_ColorType);
-    PyModule_AddObject(m, "Color", (PyObject *) &sdl_ColorType);
+    sdl_Palette_register_type(m);
 
-    /* create sdl_RectType type */
-    if (PyType_Ready(&sdl_RectType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_RectType\n");
-        return;
-    }
+    sdl_PixelFormat_register_type(m);
 
-    Py_INCREF(&sdl_RectType);
-    PyModule_AddObject(m, "Rect", (PyObject *) &sdl_RectType);
+    sdl_VideoInfo_register_type(m);
 
-    /* create sdl_PaletteType type */
-    if (PyType_Ready(&sdl_PaletteType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_PaletteType\n");
-        return;
-    }
-
-    Py_INCREF(&sdl_PaletteType);
-    PyModule_AddObject(m, "Palette", (PyObject *) &sdl_PaletteType);
-
-    /* create sdl_PixelFormatType type */
-    if (PyType_Ready(&sdl_PixelFormatType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_PixelFormatType\n");
-        return;
-    }
-
-    Py_INCREF(&sdl_PixelFormatType);
-    PyModule_AddObject(m, "PixelFormat", (PyObject *) &sdl_PixelFormatType);
-
-    /* create sdl_VideoInfoType type */
-    if (PyType_Ready(&sdl_VideoInfoType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_VideoInfoType\n");
-        return;
-    }
-
-    Py_INCREF(&sdl_VideoInfoType);
-    PyModule_AddObject(m, "VideoInfo", (PyObject *) &sdl_VideoInfoType);
-
-    /* create sdl_SurfaceType type */
-    if (PyType_Ready(&sdl_SurfaceType) < 0)
-    {
-        fprintf(stderr, "Error initializing sdl_SurfaceType\n");
-        return;
-    }
-
-    Py_INCREF(&sdl_SurfaceType);
-    PyModule_AddObject(m, "Surface", (PyObject *) &sdl_SurfaceType);
+    sdl_Surface_register_type(m);
 }

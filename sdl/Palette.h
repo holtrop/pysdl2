@@ -13,8 +13,7 @@ typedef struct
     PyObject *colors;
 } sdl_Palette;
 
-extern PyTypeObject sdl_PaletteType;
-
+void sdl_Palette_register_type(PyObject *module);
 PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p);
 
 #endif /* PALETTE_H */

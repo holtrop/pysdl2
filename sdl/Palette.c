@@ -61,6 +61,18 @@ PyTypeObject sdl_PaletteType = {
     PyType_GenericNew,              /* tp_new */
 };
 
+void sdl_Palette_register_type(PyObject *module)
+{
+    if (PyType_Ready(&sdl_PaletteType) < 0)
+    {
+        fprintf(stderr, "Error initializing sdl_PaletteType\n");
+        return;
+    }
+
+    Py_INCREF(&sdl_PaletteType);
+    PyModule_AddObject(module, "Palette", (PyObject *) &sdl_PaletteType);
+}
+
 PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p)
 {
     if (p == NULL)

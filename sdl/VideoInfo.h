@@ -24,8 +24,7 @@ typedef struct
     int current_h;
 } sdl_VideoInfo;
 
-extern PyTypeObject sdl_VideoInfoType;
-
+void sdl_VideoInfo_register_type(PyObject *module);
 PyObject *sdl_VideoInfo_from_SDL_VideoInfo(const SDL_VideoInfo *vi);
 
 #endif /* VIDEOINFO_H */
