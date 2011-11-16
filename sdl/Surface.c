@@ -1,6 +1,7 @@
 
 #include "Surface.h"
 #include "PixelFormat.h"
+#include "Rect.h"
 
 static PyMemberDef sdl_Surface_members[] = {
     {"flags", T_UINT, offsetof(sdl_Surface, surface.flags), 0, "flags"},
@@ -159,3 +160,18 @@ PyTypeObject sdl_SurfaceType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
+{
+    PyObject *format = sdl_PixelFormat_from_SDL_PixelFormat(surface->format);
+    PyObject *clip_rect = sdl_Rect_from_SDL_Rect(&surface->clip_rect);
+    PyObject *args = Py_BuildValue("IOiiIIOi",
+            surface->flags, format, surface->w, surface->h,
+            surface->pitch, clip_rect, surface->refcount);
+    PyObject *sdl_surface = PyObject_CallObject((PyObject *) &sdl_SurfaceType,
+            args);
+    Py_DECREF(args);
+    Py_DECREF(format);
+    Py_DECREF(clip_rect);
+    return sdl_surface;
+}

@@ -17,4 +17,6 @@ typedef struct
 
 extern PyTypeObject sdl_SurfaceType;
 
+PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface);
+
 #endif /* SURFACE_H */
