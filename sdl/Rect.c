@@ -60,3 +60,11 @@ PyTypeObject sdl_RectType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect)
+{
+    PyObject *args = Py_BuildValue("iiii", rect->x, rect->y, rect->w, rect->h);
+    PyObject *sdl_rect = PyObject_CallObject((PyObject *) &sdl_RectType, args);
+    Py_DECREF(args);
+    return sdl_rect;
+}

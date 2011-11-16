@@ -14,4 +14,6 @@ typedef struct
 
 extern PyTypeObject sdl_RectType;
 
+PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect);
+
 #endif /* RECT_H */
