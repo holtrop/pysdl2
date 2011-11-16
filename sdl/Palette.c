@@ -1,5 +1,6 @@
 
 #include "Palette.h"
+#include "Color.h"
 
 static PyMemberDef sdl_Palette_members[] = {
     {"ncolors", T_INT, offsetof(sdl_Palette, ncolors), 0, "number of colors"},
@@ -58,3 +59,19 @@ PyTypeObject sdl_PaletteType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p)
+{
+    PyObject *colors = PyList_New(p->ncolors);
+    for (int i = 0; i < p->ncolors; i++)
+    {
+        PyObject *color = sdl_Color_from_SDL_Color(&p->colors[i]);
+        PyList_SetItem(colors, i, color);
+    }
+    PyObject *args = Py_BuildValue("iO", p->ncolors, colors);
+    PyObject *palette = PyObject_CallObject((PyObject *) &sdl_PaletteType,
+            args);
+    Py_DECREF(args);
+    Py_DECREF(colors);
+    return palette;
+}

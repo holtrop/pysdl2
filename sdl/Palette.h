@@ -15,4 +15,6 @@ typedef struct
 
 extern PyTypeObject sdl_PaletteType;
 
+PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p);
+
 #endif /* PALETTE_H */
