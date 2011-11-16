@@ -99,7 +99,7 @@ PyObject *sdl_VideoInfo_from_SDL_VideoInfo(const SDL_VideoInfo *vi)
             vi->hw_available, vi->wm_available,
             vi->blit_hw, vi->blit_hw_CC, vi->blit_hw_A,
             vi->blit_sw, vi->blit_sw_CC, vi->blit_sw_A,
-            vi->video_mem, vfmt,
+            vi->blit_fill, vi->video_mem, vfmt,
             vi->current_w, vi->current_h);
     PyObject *sdl_vi = PyObject_CallObject((PyObject *) &sdl_VideoInfoType,
             args);
