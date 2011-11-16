@@ -96,6 +96,8 @@ PyTypeObject sdl_PixelFormatType = {
 
 PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf)
 {
+    if (pf == NULL)
+        Py_RETURN_NONE;
     PyObject *palette = sdl_Palette_from_SDL_Palette(pf->palette);
     PyObject *args = Py_BuildValue("Oiiiiiiiiiiiiiiii",
             palette, pf->BitsPerPixel, pf->BytesPerPixel,

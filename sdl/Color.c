@@ -62,6 +62,8 @@ PyTypeObject sdl_ColorType = {
 
 PyObject *sdl_Color_from_SDL_Color(SDL_Color *color)
 {
+    if (color == NULL)
+        Py_RETURN_NONE;
     PyObject *args = Py_BuildValue("iii", color->r, color->g, color->b);
     PyObject *sdl_color = PyObject_CallObject((PyObject *) &sdl_ColorType,
             args);

@@ -62,6 +62,8 @@ PyTypeObject sdl_PaletteType = {
 
 PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p)
 {
+    if (p == NULL)
+        Py_RETURN_NONE;
     PyObject *colors = PyList_New(p->ncolors);
     for (int i = 0; i < p->ncolors; i++)
     {

@@ -163,6 +163,8 @@ PyTypeObject sdl_SurfaceType = {
 
 PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
 {
+    if (surface == NULL)
+        Py_RETURN_NONE;
     PyObject *format = sdl_PixelFormat_from_SDL_PixelFormat(surface->format);
     PyObject *clip_rect = sdl_Rect_from_SDL_Rect(&surface->clip_rect);
     PyObject *args = Py_BuildValue("IOiiIIOi",

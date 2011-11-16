@@ -92,6 +92,8 @@ PyTypeObject sdl_VideoInfoType = {
 
 PyObject *sdl_VideoInfo_from_SDL_VideoInfo(SDL_VideoInfo *vi)
 {
+    if (vi == NULL)
+        Py_RETURN_NONE;
     PyObject *vfmt = sdl_PixelFormat_from_SDL_PixelFormat(vi->vfmt);
     PyObject *args = Py_BuildValue("iiiiiiiiIOii",
             vi->hw_available, vi->wm_available,

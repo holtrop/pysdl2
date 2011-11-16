@@ -63,6 +63,8 @@ PyTypeObject sdl_RectType = {
 
 PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect)
 {
+    if (rect == NULL)
+        Py_RETURN_NONE;
     PyObject *args = Py_BuildValue("iiii", rect->x, rect->y, rect->w, rect->h);
     PyObject *sdl_rect = PyObject_CallObject((PyObject *) &sdl_RectType, args);
     Py_DECREF(args);
