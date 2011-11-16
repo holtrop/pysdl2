@@ -59,3 +59,15 @@ PyTypeObject sdl_VersionInfoType = {
     0,                              /* tp_alloc */
     PyType_GenericNew,              /* tp_new */
 };
+
+PyObject *sdl_VersionInfo_from_SDL_VersionInfo(const SDL_version *ver)
+{
+    if (ver == NULL)
+        Py_RETURN_NONE;
+    PyObject *args = Py_BuildValue("iii", ver->major, ver->minor, ver->patch);
+    PyObject *ver_obj = PyObject_CallObject((PyObject *) &sdl_VersionInfoType,
+            args);
+    Py_DECREF(args);
+    return ver_obj;
+}
+

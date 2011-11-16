@@ -10,21 +10,9 @@
 #include "VideoInfo.h"
 #include "Surface.h"
 
-static PyObject *VersionInfoFromSDL_version(const SDL_version *ver)
-{
-    PyObject *lst = Py_BuildValue("()");
-    PyObject *dict = Py_BuildValue("{s:i,s:i,s:i}",
-            "major", ver->major,
-            "minor", ver->minor,
-            "patch", ver->patch);
-    PyObject *ver_obj = PyObject_Call((PyObject *) &sdl_VersionInfoType,
-            lst,
-            dict);
-    Py_DECREF(dict);
-    Py_DECREF(lst);
-    return ver_obj;
-}
-
+/**************************************************************************
+ * SDL Core Functionality                                                 *
+ *************************************************************************/
 PYFUNC(ClearError, "Clear the current SDL error")
 {
     SDL_ClearError();
@@ -70,7 +58,7 @@ PYFUNC(Linked_Version,
         "Retrieve the version of the dynamically linked SDL library")
 {
     const SDL_version *ver = SDL_Linked_Version();
-    return VersionInfoFromSDL_version(ver);
+    return sdl_VersionInfo_from_SDL_VersionInfo(ver);
 }
 
 PYFUNC(Quit, "Uninitialize PySDL")
@@ -101,7 +89,7 @@ PYFUNC(VERSION, "Retrieve compile-time version of the SDL library")
 {
     SDL_version ver;
     SDL_VERSION(&ver);
-    return VersionInfoFromSDL_version(&ver);
+    return sdl_VersionInfo_from_SDL_VersionInfo(&ver);
 }
 
 PYFUNC(WasInit, "Check which subsystems are initialized")
@@ -113,7 +101,15 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
     return Py_BuildValue("i", rc);
 }
 
+/**************************************************************************
+ * SDL Video Functionality                                                *
+ *************************************************************************/
+
+/**************************************************************************
+ * Python SDL Methods                                                     *
+ *************************************************************************/
 static PyMethodDef sdl_methods[] = {
+    /* Core */
     PYFUNC_REF(ClearError),
     PYFUNC_REF(Error),
     PYFUNC_REF(GetError),
@@ -125,6 +121,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(SetError),
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
+    /* Video */
     {NULL, NULL, 0, NULL}
 };
 

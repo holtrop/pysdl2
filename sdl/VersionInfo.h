@@ -13,4 +13,6 @@ typedef struct {
 
 extern PyTypeObject sdl_VersionInfoType;
 
+PyObject *sdl_VersionInfo_from_SDL_VersionInfo(const SDL_version *ver);
+
 #endif /* VERSIONINFO_H */
