@@ -1,22 +1,51 @@
 
 #include "Rect.h"
 
-static PyMemberDef sdl_Rect_members[] = {
-    {"x", T_UBYTE, offsetof(sdl_Rect, rect.x), 0, "x"},
-    {"y", T_UBYTE, offsetof(sdl_Rect, rect.y), 0, "y"},
-    {"w", T_UBYTE, offsetof(sdl_Rect, rect.w), 0, "width"},
-    {"h", T_UBYTE, offsetof(sdl_Rect, rect.h), 0, "height"},
-    {NULL}
-};
-
 static int
 sdl_Rect_init(sdl_Rect *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {"x", "y", "w", "h", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiii", kwlist,
-                &self->rect.x, &self->rect.y, &self->rect.w, &self->rect.h))
+    self->rect = (SDL_Rect *) calloc(1, sizeof(SDL_Rect));
+    self->owner = 1;
+    return 0;
+}
+
+static int
+sdl_Rect_setattro(sdl_Rect *self, PyObject *attr, PyObject *val)
+{
+    if (!PyString_Check(attr))
+        return -1;
+    if (!PyInt_Check(val))
+        return -1;
+    const char *aname = PyString_AsString(attr);
+    int v = PyInt_AsLong(val);
+    if (!strcmp(aname, "x"))
+        self->rect->x = v;
+    else if (!strcmp(aname, "y"))
+        self->rect->y = v;
+    else if (!strcmp(aname, "w"))
+        self->rect->w = v;
+    else if (!strcmp(aname, "h"))
+        self->rect->h = v;
+    else
         return -1;
     return 0;
+}
+
+static PyObject *
+sdl_Rect_getattro(sdl_Rect *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+        Py_RETURN_NONE;
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "x"))
+        return PyInt_FromLong(self->rect->x);
+    else if (!strcmp(aname, "y"))
+        return PyInt_FromLong(self->rect->y);
+    else if (!strcmp(aname, "w"))
+        return PyInt_FromLong(self->rect->w);
+    else if (!strcmp(aname, "h"))
+        return PyInt_FromLong(self->rect->h);
+    Py_RETURN_NONE;
 }
 
 PyTypeObject sdl_RectType = {
@@ -37,8 +66,8 @@ PyTypeObject sdl_RectType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_Rect_getattro,/* tp_getattro */
+    (setattrofunc)sdl_Rect_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL Rect Structure",           /* tp_doc */
@@ -49,7 +78,7 @@ PyTypeObject sdl_RectType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_Rect_members,               /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */
@@ -77,8 +106,8 @@ PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect)
 {
     if (rect == NULL)
         Py_RETURN_NONE;
-    PyObject *args = Py_BuildValue("iiii", rect->x, rect->y, rect->w, rect->h);
-    PyObject *sdl_rect = PyObject_CallObject((PyObject *) &sdl_RectType, args);
-    Py_DECREF(args);
-    return sdl_rect;
+    sdl_Rect *sdl_rect = PyObject_New(sdl_Rect, &sdl_RectType);
+    sdl_rect->owner = 0;
+    sdl_rect->rect = rect;
+    return (PyObject *) sdl_rect;
 }
