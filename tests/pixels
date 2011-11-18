@@ -15,7 +15,7 @@ if surf is not None:
     p = 0
     for y in range(256):
         for x in range(256):
-            surf.pixels[p] = (y << 16) | (x << 8) | 0x80
+            surf.pixels[p] = SDL.MapRGB(surf.format, x, 0, y)
             p += 1
 
     SDL.Flip(surf)
