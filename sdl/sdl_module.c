@@ -183,6 +183,14 @@ PYFUNC(ListModes, "get a list of available screen dimensions for the "
     return lst;
 }
 
+PYFUNC(SetGamma, "set the color gamma function for the display")
+{
+    float r, g, b;
+    if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
+        return NULL;
+    return Py_BuildValue("i", SDL_SetGamma(r, g, b));
+}
+
 PYFUNC(SetVideoMode, "set a video mode with the specified width, height, "
         "and bits-per-pixel values")
 {
@@ -280,6 +288,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(ListModes),
+    PYFUNC_REF(SetGamma),
     PYFUNC_REF(SetVideoMode),
     PYFUNC_REF(UpdateRect),
     PYFUNC_REF(UpdateRects),
