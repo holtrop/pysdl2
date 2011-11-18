@@ -12,10 +12,11 @@ sdl_Rect_init(sdl_Rect *self, PyObject *args, PyObject *kwargs)
 static int
 sdl_Rect_setattro(sdl_Rect *self, PyObject *attr, PyObject *val)
 {
-    if (!PyString_Check(attr))
+    if (!PyString_Check(attr) || !PyInt_Check(val))
+    {
+        PyErr_SetString(PyExc_ValueError, "Bad parameters");
         return -1;
-    if (!PyInt_Check(val))
-        return -1;
+    }
     const char *aname = PyString_AsString(attr);
     int v = PyInt_AsLong(val);
     if (!strcmp(aname, "x"))
@@ -27,7 +28,10 @@ sdl_Rect_setattro(sdl_Rect *self, PyObject *attr, PyObject *val)
     else if (!strcmp(aname, "h"))
         self->rect->h = v;
     else
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
         return -1;
+    }
     return 0;
 }
 
@@ -35,7 +39,10 @@ static PyObject *
 sdl_Rect_getattro(sdl_Rect *self, PyObject *attr)
 {
     if (!PyString_Check(attr))
-        Py_RETURN_NONE;
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
     const char *aname = PyString_AsString(attr);
     if (!strcmp(aname, "x"))
         return PyInt_FromLong(self->rect->x);
@@ -45,7 +52,8 @@ sdl_Rect_getattro(sdl_Rect *self, PyObject *attr)
         return PyInt_FromLong(self->rect->w);
     else if (!strcmp(aname, "h"))
         return PyInt_FromLong(self->rect->h);
-    Py_RETURN_NONE;
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
 }
 
 PyTypeObject sdl_RectType = {
