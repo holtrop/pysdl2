@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import time
+for d in filter(lambda x: x.startswith('lib.'), os.listdir('build')):
+    sys.path.append(os.path.sep.join([os.getcwd(), 'build', d]))
+import SDL
+
+SDL.Init(SDL.INIT_VIDEO)
+
+surf = SDL.SetVideoMode(256, 256, 32, SDL.DOUBLEBUF)
+
+if surf is not None:
+    p = 0
+    for y in range(256):
+        for x in range(256):
+            surf.pixels[p] = (y << 16) | (x << 8) | 0x80
+            p += 1
+
+    SDL.Flip(surf)
+
+    time.sleep(5)
+
+SDL.Quit()
