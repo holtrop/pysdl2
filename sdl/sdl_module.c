@@ -183,6 +183,21 @@ PYFUNC(ListModes, "get a list of available screen dimensions for the "
     return lst;
 }
 
+PYFUNC(MapRGB, "map an RGB color value to a pixel format")
+{
+    PyObject *formato;
+    unsigned int r, g, b;
+    if (!PyArg_ParseTuple(args, "OIII", &formato, &r, &g, &b))
+        return NULL;
+    if (!PyObject_IsInstance(formato, sdl_PixelFormat_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_PixelFormat *format = sdl_PixelFormat_get_SDL_PixelFormat(formato);
+    return Py_BuildValue("I", SDL_MapRGB(format, r, g, b));
+}
+
 PYFUNC(SetGamma, "set the color gamma function for the display")
 {
     float r, g, b;
@@ -289,6 +304,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(ListModes),
+    PYFUNC_REF(MapRGB),
     PYFUNC_REF(SetGamma),
     PYFUNC_REF(SetVideoMode),
     PYFUNC_REF(UpdateRect),
