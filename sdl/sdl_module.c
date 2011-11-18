@@ -116,6 +116,26 @@ PYFUNC(GetVideoSurface, "return the current display surface")
     return sdl_Surface_from_SDL_Surface(surf);
 }
 
+PYFUNC(SetVideoMode, "set a video mode with the specified width, height, "
+        "and bits-per-pixel values")
+{
+    int width, height, bpp;
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "iiiI", &width, &height, &bpp, &flags))
+        return NULL;
+    SDL_Surface *surf = SDL_SetVideoMode(width, height, bpp, flags);
+    return sdl_Surface_from_SDL_Surface(surf);
+}
+
+PYFUNC(VideoModeOK, "check to see if a video mode is supported")
+{
+    int width, height, bpp;
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "iiiI", &width, &height, &bpp, &flags))
+        return NULL;
+    return Py_BuildValue("i", SDL_VideoModeOK(width, height, bpp, flags));
+}
+
 /**************************************************************************
  * Python SDL Methods                                                     *
  *************************************************************************/
@@ -135,6 +155,8 @@ static PyMethodDef sdl_methods[] = {
     /* Video */
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
+    PYFUNC_REF(SetVideoMode),
+    PYFUNC_REF(VideoModeOK),
     {NULL, NULL, 0, NULL}
 };
 
