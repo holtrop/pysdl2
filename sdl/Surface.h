@@ -18,5 +18,7 @@ typedef struct
 
 void sdl_Surface_register_type(PyObject *module);
 PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface);
+SDL_Surface *sdl_Surface_get_SDL_Surface(PyObject *sdl_surface);
+PyObject *sdl_Surface_get_type(void);
 
 #endif /* SURFACE_H */

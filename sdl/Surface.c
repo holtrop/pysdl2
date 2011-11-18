@@ -219,3 +219,13 @@ PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
     sdl_surface->ok_to_dealloc = 1;
     return (PyObject *) sdl_surface;
 }
+
+SDL_Surface *sdl_Surface_get_SDL_Surface(PyObject *sdl_surface)
+{
+    return ((sdl_Surface *) sdl_surface)->surface;
+}
+
+PyObject *sdl_Surface_get_type(void)
+{
+    return (PyObject *) &sdl_SurfaceType;
+}
