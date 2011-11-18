@@ -145,6 +145,44 @@ PYFUNC(GetVideoSurface, "return the current display surface")
     return sdl_Surface_from_SDL_Surface(surf);
 }
 
+PYFUNC(ListModes, "get a list of available screen dimensions for the "
+        "given format and video flags")
+{
+    PyObject *formato;
+    Uint32 flags;
+    SDL_PixelFormat *format;
+    if (!PyArg_ParseTuple(args, "OI", &formato, &flags))
+        return NULL;
+    if (PyObject_IsInstance(formato, sdl_PixelFormat_get_type()))
+    {
+        format = sdl_PixelFormat_get_SDL_PixelFormat(formato);
+    }
+    else if (formato == Py_None)
+    {
+        format = NULL;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Rect **modes = SDL_ListModes(format, flags);
+    if (modes == NULL)
+        Py_RETURN_NONE;
+    if ((long) modes == -1)
+        return PyInt_FromLong(-1);
+    int len;
+    for (len = 0; modes[len]; len++)
+        ;
+    PyObject *lst = PyList_New(len);
+    for (int i = 0; i < len; i++)
+    {
+        PyObject *rect = sdl_Rect_from_SDL_Rect(modes[i]);
+        PyList_SetItem(lst, i, rect);
+    }
+    return lst;
+}
+
 PYFUNC(SetVideoMode, "set a video mode with the specified width, height, "
         "and bits-per-pixel values")
 {
@@ -195,6 +233,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
+    PYFUNC_REF(ListModes),
     PYFUNC_REF(SetVideoMode),
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
