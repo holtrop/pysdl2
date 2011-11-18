@@ -69,7 +69,7 @@ PyTypeObject sdl_RectType = {
     "SDL.Rect",                     /* tp_name */
     sizeof(sdl_Rect),               /* tp_basicsize */
     0,                              /* tp_itemsize */
-    sdl_Rect_dealloc,               /* tp_dealloc */
+    (destructor)sdl_Rect_dealloc,   /* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
