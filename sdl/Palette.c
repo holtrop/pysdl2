@@ -2,21 +2,35 @@
 #include "Palette.h"
 #include "Color.h"
 
-static PyMemberDef sdl_Palette_members[] = {
-    {"ncolors", T_INT, offsetof(sdl_Palette, ncolors), 0, "number of colors"},
-    {"colors", T_OBJECT_EX, offsetof(sdl_Palette, colors), 0, "list of colors"},
-    {NULL}
-};
-
 static int
 sdl_Palette_init(sdl_Palette *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {"ncolors", "colors", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO", kwlist,
-                &self->ncolors, &self->colors))
-        return -1;
-    Py_INCREF(self->colors);
-    return 0;
+    PyErr_SetString(PyExc_TypeError, "Palette objects are not constructible");
+    return -1;
+}
+
+static int
+sdl_Palette_setattro(sdl_Palette *self, PyObject *attr, PyObject *val)
+{
+    PyErr_SetString(PyExc_TypeError, "Palette types are immutable");
+    return -1;
+}
+
+static PyObject *
+sdl_Palette_getattro(sdl_Palette *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "ncolors"))
+        return PyInt_FromLong(self->palette->ncolors);
+    else if (!strcmp(aname, "colors"))
+        return self->colors;
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
 }
 
 PyTypeObject sdl_PaletteType = {
@@ -37,8 +51,8 @@ PyTypeObject sdl_PaletteType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_Palette_getattro,/* tp_getattro */
+    (setattrofunc)sdl_Palette_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL Palette Structure",        /* tp_doc */
@@ -49,7 +63,7 @@ PyTypeObject sdl_PaletteType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_Palette_members,            /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */
@@ -83,10 +97,8 @@ PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p)
         PyObject *color = sdl_Color_from_SDL_Color(&p->colors[i]);
         PyList_SetItem(colors, i, color);
     }
-    PyObject *args = Py_BuildValue("iO", p->ncolors, colors);
-    PyObject *palette = PyObject_CallObject((PyObject *) &sdl_PaletteType,
-            args);
-    Py_DECREF(args);
-    Py_DECREF(colors);
-    return palette;
+    sdl_Palette *palette = PyObject_New(sdl_Palette, &sdl_PaletteType);
+    palette->palette = p;
+    palette->colors = colors;
+    return (PyObject *) palette;
 }

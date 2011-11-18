@@ -9,7 +9,7 @@
 typedef struct
 {
     PyObject_HEAD
-    int ncolors;
+    SDL_Palette *palette;
     PyObject *colors;
 } sdl_Palette;
 
