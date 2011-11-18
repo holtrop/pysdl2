@@ -133,6 +133,40 @@ PYFUNC(FreeSurface, "delete an SDL.Surface")
     Py_RETURN_NONE;
 }
 
+PYFUNC(GetRGB, "get RGB values from a pixel in the specified pixel format")
+{
+    PyObject *formato;
+    Uint32 pixel;
+    if (!PyArg_ParseTuple(args, "IO", &pixel, &formato))
+        return NULL;
+    if (!PyObject_IsInstance(formato, sdl_PixelFormat_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_PixelFormat *format = sdl_PixelFormat_get_SDL_PixelFormat(formato);
+    Uint8 r, g, b;
+    SDL_GetRGB(pixel, format, &r, &g, &b);
+    return Py_BuildValue("III", r, g, b);
+}
+
+PYFUNC(GetRGBA, "get RGBA values from a pixel in the specified pixel format")
+{
+    PyObject *formato;
+    Uint32 pixel;
+    if (!PyArg_ParseTuple(args, "IO", &pixel, &formato))
+        return NULL;
+    if (!PyObject_IsInstance(formato, sdl_PixelFormat_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_PixelFormat *format = sdl_PixelFormat_get_SDL_PixelFormat(formato);
+    Uint8 r, g, b, a;
+    SDL_GetRGBA(pixel, format, &r, &g, &b, &a);
+    return Py_BuildValue("IIII", r, g, b, a);
+}
+
 PYFUNC(GetVideoInfo, "return information about current video hardware")
 {
     const SDL_VideoInfo *vi = SDL_GetVideoInfo();
@@ -316,6 +350,8 @@ static PyMethodDef sdl_methods[] = {
     /* Video */
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
+    PYFUNC_REF(GetRGB),
+    PYFUNC_REF(GetRGBA),
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(ListModes),
