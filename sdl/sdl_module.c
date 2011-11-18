@@ -210,6 +210,36 @@ PYFUNC(UpdateRect, "update the given area of the screen")
     Py_RETURN_NONE;
 }
 
+PYFUNC(UpdateRects, "update the given areas of the screen")
+{
+    PyObject *surfo;
+    PyObject *rectso;
+    if (!PyArg_ParseTuple(args, "OO", &surfo, &rectso))
+        return NULL;
+    if ( (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+            || (!PyList_Check(rectso)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    Py_ssize_t len = PyList_Size(rectso);
+    SDL_Rect *rects = calloc(len, sizeof(SDL_Rect));
+    for (Py_ssize_t i = 0; i < len; i++)
+    {
+        PyObject *o = PyList_GetItem(rectso, i);
+        if (!PyObject_IsInstance(o, sdl_Rect_get_type()))
+        {
+            PyErr_SetString(PyExc_ValueError, "Invalid parameter in list");
+            free(rects);
+        }
+        memcpy(&rects[i], sdl_Rect_get_SDL_Rect(o), sizeof(SDL_Rect));
+    }
+    SDL_UpdateRects(ss, (int) len, rects);
+    free(rects);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(VideoDriverName, "get the name of the video driver")
 {
     const int len = 101;
@@ -252,6 +282,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(ListModes),
     PYFUNC_REF(SetVideoMode),
     PYFUNC_REF(UpdateRect),
+    PYFUNC_REF(UpdateRects),
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
     {NULL, NULL, 0, NULL}
