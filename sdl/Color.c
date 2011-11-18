@@ -117,9 +117,8 @@ PyObject *sdl_Color_from_SDL_Color(SDL_Color *color)
 {
     if (color == NULL)
         Py_RETURN_NONE;
-    PyObject *args = Py_BuildValue("iii", color->r, color->g, color->b);
-    PyObject *sdl_color = PyObject_CallObject((PyObject *) &sdl_ColorType,
-            args);
-    Py_DECREF(args);
-    return sdl_color;
+    sdl_Color *sdl_color = PyObject_New(sdl_Color, &sdl_ColorType);
+    sdl_color->owner = 0;
+    sdl_color->color = color;
+    return (PyObject *) sdl_color;
 }
