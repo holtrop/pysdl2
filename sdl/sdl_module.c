@@ -156,6 +156,15 @@ PYFUNC(SetVideoMode, "set a video mode with the specified width, height, "
     return sdl_Surface_from_SDL_Surface(surf);
 }
 
+PYFUNC(VideoDriverName, "get the name of the video driver")
+{
+    const int len = 101;
+    char namebuf[len];
+    SDL_VideoDriverName(&namebuf[0], len);
+    namebuf[len - 1] = '\0';
+    return PyString_FromString(namebuf);
+}
+
 PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 {
     int width, height, bpp;
@@ -187,6 +196,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(SetVideoMode),
+    PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
     {NULL, NULL, 0, NULL}
 };

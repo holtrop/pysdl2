@@ -325,5 +325,7 @@ vi = SDL.GetVideoInfo()
 print 'Current video size %dx%d, %d bpp' % (vi.current_w, vi.current_h,
         vi.vfmt.BitsPerPixel)
 
+print 'Video driver name: "%s"' % SDL.VideoDriverName()
+
 print 'calling SDL.Quit()'
 SDL.Quit()
