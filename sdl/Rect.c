@@ -126,3 +126,13 @@ PyObject *sdl_Rect_from_SDL_Rect(SDL_Rect *rect)
     sdl_rect->rect = rect;
     return (PyObject *) sdl_rect;
 }
+
+PyObject *sdl_Rect_get_type(void)
+{
+    return (PyObject *) &sdl_RectType;
+}
+
+SDL_Rect *sdl_Rect_get_SDL_Rect(PyObject *rect)
+{
+    return ((sdl_Rect *) rect)->rect;
+}
