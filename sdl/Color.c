@@ -1,21 +1,62 @@
 
 #include "Color.h"
 
-static PyMemberDef sdl_Color_members[] = {
-    {"r", T_UBYTE, offsetof(sdl_Color, color.r), 0, "r"},
-    {"g", T_UBYTE, offsetof(sdl_Color, color.g), 0, "g"},
-    {"b", T_UBYTE, offsetof(sdl_Color, color.b), 0, "b"},
-    {NULL}
-};
-
 static int
 sdl_Color_init(sdl_Color *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {"r", "g", "b", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iii", kwlist,
-                &self->color.r, &self->color.g, &self->color.b))
-        return -1;
+    self->owner = 1;
+    self->color = calloc(1, sizeof(sdl_Color));
     return 0;
+}
+
+static int
+sdl_Color_setattro(sdl_Color *self, PyObject *attr, PyObject *val)
+{
+    if (!PyString_Check(attr) || !PyInt_Check(val))
+    {
+        PyErr_SetString(PyExc_ValueError, "Bad parameters");
+        return -1;
+    }
+    const char *aname = PyString_AsString(attr);
+    int v = PyInt_AsLong(val);
+    if (!strcmp(aname, "r"))
+        self->color->r = v;
+    else if (!strcmp(aname, "g"))
+        self->color->g = v;
+    else if (!strcmp(aname, "b"))
+        self->color->b = v;
+    else
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+        return -1;
+    }
+    return 0;
+}
+
+static PyObject *
+sdl_Color_getattro(sdl_Color *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "r"))
+        return PyInt_FromLong(self->color->r);
+    else if (!strcmp(aname, "g"))
+        return PyInt_FromLong(self->color->g);
+    else if (!strcmp(aname, "b"))
+        return PyInt_FromLong(self->color->b);
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
+}
+
+static void
+sdl_Color_dealloc(sdl_Color *self)
+{
+    if (self->owner)
+        free(self->color);
 }
 
 PyTypeObject sdl_ColorType = {
@@ -24,7 +65,7 @@ PyTypeObject sdl_ColorType = {
     "SDL.Color",                    /* tp_name */
     sizeof(sdl_Color),              /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_Color_dealloc,  /* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -36,8 +77,8 @@ PyTypeObject sdl_ColorType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_Color_getattro,/* tp_getattro */
+    (setattrofunc)sdl_Color_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL Color Structure",          /* tp_doc */
@@ -48,7 +89,7 @@ PyTypeObject sdl_ColorType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_Color_members,              /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */

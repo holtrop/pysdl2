@@ -9,7 +9,8 @@
 typedef struct
 {
     PyObject_HEAD
-    SDL_Color color;
+    char owner;
+    SDL_Color *color;
 } sdl_Color;
 
 void sdl_Color_register_type(PyObject *module);
