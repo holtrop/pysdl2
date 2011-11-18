@@ -56,13 +56,20 @@ sdl_Rect_getattro(sdl_Rect *self, PyObject *attr)
     return NULL;
 }
 
+static void
+sdl_Rect_dealloc(sdl_Rect *self)
+{
+    if (self->owner)
+        free(self->rect);
+}
+
 PyTypeObject sdl_RectType = {
     PyObject_HEAD_INIT(NULL)
     0,                              /* ob_size */
     "SDL.Rect",                     /* tp_name */
     sizeof(sdl_Rect),               /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    sdl_Rect_dealloc,               /* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
