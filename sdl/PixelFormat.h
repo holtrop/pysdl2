@@ -16,5 +16,7 @@ typedef struct
 
 void sdl_PixelFormat_register_type(PyObject *module);
 PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf);
+PyObject *sdl_PixelFormat_get_type(void);
+SDL_PixelFormat *sdl_PixelFormat_get_SDL_PixelFormat(PyObject *pf);
 
 #endif /* PIXELFORMAT_H */

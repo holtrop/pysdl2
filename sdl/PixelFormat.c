@@ -142,3 +142,13 @@ PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf)
     pixelformat->ok_to_dealloc = 1;
     return (PyObject *) pixelformat;
 }
+
+PyObject *sdl_PixelFormat_get_type(void)
+{
+    return (PyObject *) &sdl_PixelFormatType;
+}
+
+SDL_PixelFormat *sdl_PixelFormat_get_SDL_PixelFormat(PyObject *pf)
+{
+    return ((sdl_PixelFormat *) pf)->pf;
+}
