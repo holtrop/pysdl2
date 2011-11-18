@@ -240,6 +240,7 @@ PYFUNC(UpdateRects, "update the given areas of the screen")
         {
             PyErr_SetString(PyExc_ValueError, "Invalid parameter in list");
             free(rects);
+            return NULL;
         }
         memcpy(&rects[i], sdl_Rect_get_SDL_Rect(o), sizeof(SDL_Rect));
     }
