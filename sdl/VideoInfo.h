@@ -9,19 +9,9 @@
 typedef struct
 {
     PyObject_HEAD
-    char hw_available;
-    char wm_available;
-    char blit_hw;
-    char blit_hw_CC;
-    char blit_hw_A;
-    char blit_sw;
-    char blit_sw_CC;
-    char blit_sw_A;
-    char blit_fill;
-    uint32_t video_mem;
+    const SDL_VideoInfo *vi;
     PyObject *vfmt;
-    int current_w;
-    int current_h;
+    char ok_to_dealloc;
 } sdl_VideoInfo;
 
 void sdl_VideoInfo_register_type(PyObject *module);

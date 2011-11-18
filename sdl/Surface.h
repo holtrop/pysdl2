@@ -9,10 +9,11 @@
 typedef struct
 {
     PyObject_HEAD
-    SDL_Surface surface;
+    SDL_Surface *surface;
     PyObject *format;
     PyObject *pixels;
     PyObject *clip_rect;
+    char ok_to_dealloc;
 } sdl_Surface;
 
 void sdl_Surface_register_type(PyObject *module);

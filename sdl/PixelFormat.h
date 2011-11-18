@@ -10,7 +10,8 @@ typedef struct
 {
     PyObject_HEAD
     PyObject *palette;
-    SDL_PixelFormat pf;
+    SDL_PixelFormat *pf;
+    char ok_to_dealloc;
 } sdl_PixelFormat;
 
 void sdl_PixelFormat_register_type(PyObject *module);

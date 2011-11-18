@@ -2,51 +2,69 @@
 #include "VideoInfo.h"
 #include "PixelFormat.h"
 
-static PyMemberDef sdl_VideoInfo_members[] = {
-    {"hw_available", T_BOOL, offsetof(sdl_VideoInfo, hw_available), 0,
-        "hw_available"},
-    {"wm_available", T_BOOL, offsetof(sdl_VideoInfo, wm_available), 0,
-        "wm_available"},
-    {"blit_hw", T_BOOL, offsetof(sdl_VideoInfo, blit_hw), 0,
-        "blit_hw"},
-    {"blit_hw_CC", T_BOOL, offsetof(sdl_VideoInfo, blit_hw_CC), 0,
-        "blit_hw_CC"},
-    {"blit_hw_A", T_BOOL, offsetof(sdl_VideoInfo, blit_hw_A), 0,
-        "blit_hw_A"},
-    {"blit_sw", T_BOOL, offsetof(sdl_VideoInfo, blit_sw), 0,
-        "blit_sw"},
-    {"blit_sw_CC", T_BOOL, offsetof(sdl_VideoInfo, blit_sw_CC), 0,
-        "blit_sw_CC"},
-    {"blit_sw_A", T_BOOL, offsetof(sdl_VideoInfo, blit_sw_A), 0,
-        "blit_sw_A"},
-    {"blit_fill", T_BOOL, offsetof(sdl_VideoInfo, blit_fill), 0, "blit_fill"},
-    {"video_mem", T_UINT, offsetof(sdl_VideoInfo, video_mem), 0, "video_mem"},
-    {"vfmt", T_OBJECT_EX, offsetof(sdl_VideoInfo, vfmt), 0, "vfmt"},
-    {"current_w", T_INT, offsetof(sdl_VideoInfo, current_w), 0, "current_w"},
-    {"current_h", T_INT, offsetof(sdl_VideoInfo, current_h), 0, "current_h"},
-    {NULL}
-};
-
 static int
 sdl_VideoInfo_init(sdl_VideoInfo *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {
-        "hw_available", "wm_available",
-        "blit_hw", "blit_hw_CC", "blit_hw_A",
-        "blit_sw", "blit_sw_CC", "blit_sw_A",
-        "blit_fill", "video_mem", "vfmt",
-        "current_w", "current_h",
-        NULL
-    };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiiiiiiiiIOii", kwlist,
-                &self->hw_available, &self->wm_available,
-                &self->blit_hw, &self->blit_hw_CC, &self->blit_hw_A,
-                &self->blit_sw, &self->blit_sw_CC, &self->blit_sw_A,
-                &self->blit_fill, &self->video_mem, &self->vfmt,
-                &self->current_w, &self->current_h))
-        return -1;
-    Py_INCREF(self->vfmt);
-    return 0;
+    self->ok_to_dealloc = 0;
+    PyErr_SetString(PyExc_TypeError,
+            "VideoInfo objects are not constructible");
+    return -1;
+}
+
+static int
+sdl_VideoInfo_setattro(sdl_VideoInfo *self, PyObject *attr, PyObject *val)
+{
+    PyErr_SetString(PyExc_TypeError, "VideoInfo types are immutable");
+    return -1;
+}
+
+static PyObject *
+sdl_VideoInfo_getattro(sdl_VideoInfo *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "vfmt"))
+    {
+        Py_INCREF(self->vfmt);
+        return self->vfmt;
+    }
+    else if (!strcmp(aname, "hw_available"))
+        return Py_BuildValue("I", self->vi->hw_available);
+    else if (!strcmp(aname, "wm_available"))
+        return Py_BuildValue("I", self->vi->wm_available);
+    else if (!strcmp(aname, "blit_hw"))
+        return Py_BuildValue("I", self->vi->blit_hw);
+    else if (!strcmp(aname, "blit_hw_CC"))
+        return Py_BuildValue("I", self->vi->blit_hw_CC);
+    else if (!strcmp(aname, "blit_hw_A"))
+        return Py_BuildValue("I", self->vi->blit_hw_A);
+    else if (!strcmp(aname, "blit_sw"))
+        return Py_BuildValue("I", self->vi->blit_sw);
+    else if (!strcmp(aname, "blit_sw_CC"))
+        return Py_BuildValue("I", self->vi->blit_sw_CC);
+    else if (!strcmp(aname, "blit_sw_A"))
+        return Py_BuildValue("I", self->vi->blit_sw_A);
+    else if (!strcmp(aname, "blit_fill"))
+        return Py_BuildValue("I", self->vi->blit_fill);
+    else if (!strcmp(aname, "video_mem"))
+        return Py_BuildValue("I", self->vi->video_mem);
+    else if (!strcmp(aname, "current_w"))
+        return Py_BuildValue("i", self->vi->current_w);
+    else if (!strcmp(aname, "current_h"))
+        return Py_BuildValue("i", self->vi->current_h);
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
+}
+
+static void
+sdl_VideoInfo_dealloc(sdl_VideoInfo *self)
+{
+    if (self->ok_to_dealloc)
+        Py_DECREF(self->vfmt);
 }
 
 PyTypeObject sdl_VideoInfoType = {
@@ -55,7 +73,7 @@ PyTypeObject sdl_VideoInfoType = {
     "SDL.VideoInfo",                /* tp_name */
     sizeof(sdl_VideoInfo),          /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_VideoInfo_dealloc,/* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -67,8 +85,8 @@ PyTypeObject sdl_VideoInfoType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_VideoInfo_getattro,/* tp_getattro */
+    (setattrofunc)sdl_VideoInfo_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL VideoInfo Structure",      /* tp_doc */
@@ -79,7 +97,7 @@ PyTypeObject sdl_VideoInfoType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_VideoInfo_members,          /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */
@@ -108,15 +126,9 @@ PyObject *sdl_VideoInfo_from_SDL_VideoInfo(const SDL_VideoInfo *vi)
     if (vi == NULL)
         Py_RETURN_NONE;
     PyObject *vfmt = sdl_PixelFormat_from_SDL_PixelFormat(vi->vfmt);
-    PyObject *args = Py_BuildValue("iiiiiiiiiIOii",
-            vi->hw_available, vi->wm_available,
-            vi->blit_hw, vi->blit_hw_CC, vi->blit_hw_A,
-            vi->blit_sw, vi->blit_sw_CC, vi->blit_sw_A,
-            vi->blit_fill, vi->video_mem, vfmt,
-            vi->current_w, vi->current_h);
-    PyObject *sdl_vi = PyObject_CallObject((PyObject *) &sdl_VideoInfoType,
-            args);
-    Py_DECREF(args);
-    Py_DECREF(vfmt);
-    return sdl_vi;
+    sdl_VideoInfo *sdl_vi = PyObject_New(sdl_VideoInfo, &sdl_VideoInfoType);
+    sdl_vi->vfmt = vfmt;
+    sdl_vi->vi = vi;
+    sdl_vi->ok_to_dealloc = 1;
+    return (PyObject *) sdl_vi;
 }

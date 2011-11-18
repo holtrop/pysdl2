@@ -3,52 +3,28 @@
 #include "PixelFormat.h"
 #include "Rect.h"
 
-static PyMemberDef sdl_Surface_members[] = {
-    {"flags", T_UINT, offsetof(sdl_Surface, surface.flags), 0, "flags"},
-    {"format", T_OBJECT_EX, offsetof(sdl_Surface, format), 0, "format"},
-    {"w", T_INT, offsetof(sdl_Surface, surface.w), 0, "width"},
-    {"h", T_INT, offsetof(sdl_Surface, surface.h), 0, "height"},
-    {"pitch", T_USHORT, offsetof(sdl_Surface, surface.pitch), 0, "pitch"},
-    {"pixels", T_OBJECT_EX, offsetof(sdl_Surface, pixels), 0, "pixels"},
-    {"clip_rect", T_OBJECT_EX, offsetof(sdl_Surface, clip_rect), 0,
-        "clip_rect"},
-    {"refcount", T_INT, offsetof(sdl_Surface, surface.refcount), 0,
-        "refcount"},
-    {NULL}
-};
-
 static int
 sdl_Surface_init(sdl_Surface *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {
-        "flags", "format", "w", "h", "pitch", "pixels", "clip_rect", "refcount",
-        NULL
-    };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "IOiiIIOi", kwlist,
-                &self->surface.flags, &self->format,
-                &self->surface.w, &self->surface.h,
-                &self->surface.pitch, &self->surface.pixels,
-                &self->clip_rect, &self->surface.refcount))
-        return -1;
-    self->pixels = (PyObject *) self;
-    Py_INCREF(self->format);
-    Py_INCREF(self->clip_rect);
-    return 0;
+    self->ok_to_dealloc = 0;
+    PyErr_SetString(PyExc_TypeError,
+            "Surface objects are not constructible");
+    return -1;
 }
 
 static Py_ssize_t
 sdl_Surface_len(sdl_Surface *self)
 {
-    return self->surface.w * self->surface.h;
+    return self->surface->w * self->surface->h;
 }
 
 PyObject *
 sdl_Surface_getitem(sdl_Surface *self, Py_ssize_t i)
 {
-    if (i < 0 || i >= self->surface.w * self->surface.h)
+    if (i < 0 || i >= self->surface->w * self->surface->h)
         Py_RETURN_NONE;
-    int bpp = ((sdl_PixelFormat *) self->format)->pf.BytesPerPixel;
-    uint8_t *pxl = ((uint8_t *) self->surface.pixels) + i * bpp;
+    int bpp = self->surface->format->BytesPerPixel;
+    uint8_t *pxl = ((uint8_t *) self->surface->pixels) + i * bpp;
     uint32_t pval = 0;
     switch (bpp)
     {
@@ -76,12 +52,12 @@ sdl_Surface_getitem(sdl_Surface *self, Py_ssize_t i)
 int
 sdl_Surface_setitem(sdl_Surface *self, Py_ssize_t i, PyObject *v)
 {
-    if (i < 0 || i >= self->surface.w * self->surface.h)
+    if (i < 0 || i >= self->surface->w * self->surface->h)
         return -1;
     if (!PyInt_Check(v))
         return -1;
-    int bpp = ((sdl_PixelFormat *) self->format)->pf.BytesPerPixel;
-    uint8_t *pxl = ((uint8_t *) self->surface.pixels) + i * bpp;
+    int bpp = self->surface->format->BytesPerPixel;
+    uint8_t *pxl = ((uint8_t *) self->surface->pixels) + i * bpp;
     uint32_t pval = PyInt_AsSsize_t(v);
     switch (bpp)
     {
@@ -109,6 +85,51 @@ sdl_Surface_setitem(sdl_Surface *self, Py_ssize_t i, PyObject *v)
     return 0;
 }
 
+static int
+sdl_Surface_setattro(sdl_Surface *self, PyObject *attr, PyObject *val)
+{
+    PyErr_SetString(PyExc_TypeError, "Surface types are immutable");
+    return -1;
+}
+
+static PyObject *
+sdl_Surface_getattro(sdl_Surface *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "format"))
+    {
+        Py_INCREF(self->format);
+        return self->format;
+    }
+    else if (!strcmp(aname, "pixels"))
+    {
+        Py_INCREF(self->pixels);
+        return self->pixels;
+    }
+    else if (!strcmp(aname, "clip_rect"))
+    {
+        Py_INCREF(self->clip_rect);
+        return self->clip_rect;
+    }
+    else if (!strcmp(aname, "flags"))
+        return Py_BuildValue("I", self->surface->flags);
+    else if (!strcmp(aname, "w"))
+        return Py_BuildValue("i", self->surface->w);
+    else if (!strcmp(aname, "h"))
+        return Py_BuildValue("i", self->surface->h);
+    else if (!strcmp(aname, "pitch"))
+        return Py_BuildValue("I", self->surface->pitch);
+    else if (!strcmp(aname, "refcount"))
+        return Py_BuildValue("i", self->surface->refcount);
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
+}
+
 static PySequenceMethods sdl_Surface_seqitems = {
     (lenfunc)sdl_Surface_len,               /* sq_length */
     0,                                      /* sq_concat */
@@ -121,13 +142,23 @@ static PySequenceMethods sdl_Surface_seqitems = {
     0,                                      /* sq_inplace_repeat */
 };
 
+static void
+sdl_Surface_dealloc(sdl_Surface *self)
+{
+    if (self->ok_to_dealloc)
+    {
+        Py_DECREF(self->format);
+        Py_DECREF(self->clip_rect);
+    }
+}
+
 PyTypeObject sdl_SurfaceType = {
     PyObject_HEAD_INIT(NULL)
     0,                              /* ob_size */
     "SDL.Surface",                  /* tp_name */
     sizeof(sdl_Surface),            /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_Surface_dealloc,/* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -139,8 +170,8 @@ PyTypeObject sdl_SurfaceType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_Surface_getattro,/* tp_getattro */
+    (setattrofunc)sdl_Surface_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL Surface Structure",        /* tp_doc */
@@ -151,7 +182,7 @@ PyTypeObject sdl_SurfaceType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_Surface_members,            /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */
@@ -181,13 +212,10 @@ PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
         Py_RETURN_NONE;
     PyObject *format = sdl_PixelFormat_from_SDL_PixelFormat(surface->format);
     PyObject *clip_rect = sdl_Rect_from_SDL_Rect(&surface->clip_rect);
-    PyObject *args = Py_BuildValue("IOiiIIOi",
-            surface->flags, format, surface->w, surface->h,
-            surface->pitch, clip_rect, surface->refcount);
-    PyObject *sdl_surface = PyObject_CallObject((PyObject *) &sdl_SurfaceType,
-            args);
-    Py_DECREF(args);
-    Py_DECREF(format);
-    Py_DECREF(clip_rect);
-    return sdl_surface;
+    sdl_Surface *sdl_surface = PyObject_New(sdl_Surface, &sdl_SurfaceType);
+    sdl_surface->format = format;
+    sdl_surface->pixels = (PyObject *) sdl_surface;
+    sdl_surface->clip_rect = clip_rect;
+    sdl_surface->ok_to_dealloc = 1;
+    return (PyObject *) sdl_surface;
 }

@@ -11,6 +11,7 @@ typedef struct
     PyObject_HEAD
     SDL_Palette *palette;
     PyObject *colors;
+    char ok_to_dealloc;
 } sdl_Palette;
 
 void sdl_Palette_register_type(PyObject *module);

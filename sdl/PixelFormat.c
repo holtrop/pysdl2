@@ -2,55 +2,77 @@
 #include "PixelFormat.h"
 #include "Palette.h"
 
-static PyMemberDef sdl_PixelFormat_members[] = {
-    {"palette", T_OBJECT_EX, offsetof(sdl_PixelFormat, palette), 0,
-        "palette"},
-    {"BitsPerPixel", T_UBYTE, offsetof(sdl_PixelFormat, pf.BitsPerPixel), 0,
-        "BitsPerPixel"},
-    {"BytesPerPixel", T_UBYTE, offsetof(sdl_PixelFormat, pf.BytesPerPixel), 0,
-        "BytesPerPixel"},
-    {"Rloss", T_UBYTE, offsetof(sdl_PixelFormat, pf.Rloss), 0, "Rloss"},
-    {"Gloss", T_UBYTE, offsetof(sdl_PixelFormat, pf.Gloss), 0, "Gloss"},
-    {"Bloss", T_UBYTE, offsetof(sdl_PixelFormat, pf.Bloss), 0, "Bloss"},
-    {"Aloss", T_UBYTE, offsetof(sdl_PixelFormat, pf.Aloss), 0, "Aloss"},
-    {"Rshift", T_UBYTE, offsetof(sdl_PixelFormat, pf.Rshift), 0, "Rshift"},
-    {"Gshift", T_UBYTE, offsetof(sdl_PixelFormat, pf.Gshift), 0, "Gshift"},
-    {"Bshift", T_UBYTE, offsetof(sdl_PixelFormat, pf.Bshift), 0, "Bshift"},
-    {"Ashift", T_UBYTE, offsetof(sdl_PixelFormat, pf.Ashift), 0, "Ashift"},
-    {"Rmask", T_UINT, offsetof(sdl_PixelFormat, pf.Rmask), 0, "Rmask"},
-    {"Gmask", T_UINT, offsetof(sdl_PixelFormat, pf.Gmask), 0, "Gmask"},
-    {"Bmask", T_UINT, offsetof(sdl_PixelFormat, pf.Bmask), 0, "Bmask"},
-    {"Amask", T_UINT, offsetof(sdl_PixelFormat, pf.Amask), 0, "Amask"},
-    {"colorkey", T_UINT, offsetof(sdl_PixelFormat, pf.colorkey), 0, "colorkey"},
-    {"alpha", T_UBYTE, offsetof(sdl_PixelFormat, pf.alpha), 0, "alpha"},
-    {NULL}
-};
-
 static int
 sdl_PixelFormat_init(sdl_PixelFormat *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = {
-        "palette", "BitsPerPixel", "BytesPerPixel",
-        "Rloss", "Gloss", "Bloss", "Aloss",
-        "Rshift", "Gshift", "Bshift", "Ashift",
-        "Rmask", "Gmask", "Bmask", "Amask",
-        "colorkey",
-        "alpha",
-        NULL
-    };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oiiiiiiiiiiiiiiii", kwlist,
-                &self->palette,
-                &self->pf.BitsPerPixel, &self->pf.BytesPerPixel,
-                &self->pf.Rloss, &self->pf.Gloss,
-                &self->pf.Bloss, &self->pf.Aloss,
-                &self->pf.Rshift, &self->pf.Gshift,
-                &self->pf.Bshift, &self->pf.Ashift,
-                &self->pf.Rmask, &self->pf.Gmask,
-                &self->pf.Bmask, &self->pf.Amask,
-                &self->pf.colorkey, &self->pf.alpha))
-        return -1;
-    Py_INCREF(self->palette);
-    return 0;
+    self->ok_to_dealloc = 0;
+    PyErr_SetString(PyExc_TypeError,
+            "PixelFormat objects are not constructible");
+    return -1;
+}
+
+static int
+sdl_PixelFormat_setattro(sdl_PixelFormat *self, PyObject *attr, PyObject *val)
+{
+    PyErr_SetString(PyExc_TypeError, "PixelFormat types are immutable");
+    return -1;
+}
+
+static PyObject *
+sdl_PixelFormat_getattro(sdl_PixelFormat *self, PyObject *attr)
+{
+    if (!PyString_Check(attr))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid attribute name");
+        return NULL;
+    }
+    const char *aname = PyString_AsString(attr);
+    if (!strcmp(aname, "palette"))
+    {
+        Py_INCREF(self->palette);
+        return self->palette;
+    }
+    else if (!strcmp(aname, "BitsPerPixel"))
+        return Py_BuildValue("I", self->pf->BitsPerPixel);
+    else if (!strcmp(aname, "BytesPerPixel"))
+        return Py_BuildValue("I", self->pf->BytesPerPixel);
+    else if (!strcmp(aname, "Rloss"))
+        return Py_BuildValue("I", self->pf->Rloss);
+    else if (!strcmp(aname, "Gloss"))
+        return Py_BuildValue("I", self->pf->Gloss);
+    else if (!strcmp(aname, "Bloss"))
+        return Py_BuildValue("I", self->pf->Bloss);
+    else if (!strcmp(aname, "Aloss"))
+        return Py_BuildValue("I", self->pf->Aloss);
+    else if (!strcmp(aname, "Rshift"))
+        return Py_BuildValue("I", self->pf->Rshift);
+    else if (!strcmp(aname, "Gshift"))
+        return Py_BuildValue("I", self->pf->Gshift);
+    else if (!strcmp(aname, "Bshift"))
+        return Py_BuildValue("I", self->pf->Bshift);
+    else if (!strcmp(aname, "Ashift"))
+        return Py_BuildValue("I", self->pf->Ashift);
+    else if (!strcmp(aname, "Rmask"))
+        return Py_BuildValue("I", self->pf->Rmask);
+    else if (!strcmp(aname, "Gmask"))
+        return Py_BuildValue("I", self->pf->Gmask);
+    else if (!strcmp(aname, "Bmask"))
+        return Py_BuildValue("I", self->pf->Bmask);
+    else if (!strcmp(aname, "Amask"))
+        return Py_BuildValue("I", self->pf->Amask);
+    else if (!strcmp(aname, "colorkey"))
+        return Py_BuildValue("I", self->pf->colorkey);
+    else if (!strcmp(aname, "alpha"))
+        return Py_BuildValue("I", self->pf->alpha);
+    PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
+    return NULL;
+}
+
+static void
+sdl_PixelFormat_dealloc(sdl_PixelFormat *self)
+{
+    if (self->ok_to_dealloc)
+        Py_DECREF(self->palette);
 }
 
 PyTypeObject sdl_PixelFormatType = {
@@ -59,7 +81,7 @@ PyTypeObject sdl_PixelFormatType = {
     "SDL.PixelFormat",              /* tp_name */
     sizeof(sdl_PixelFormat),        /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_PixelFormat_dealloc,/* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -71,8 +93,8 @@ PyTypeObject sdl_PixelFormatType = {
     0,                              /* tp_hash  */
     0,                              /* tp_call */
     0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
+    (getattrofunc)sdl_PixelFormat_getattro,/* tp_getattro */
+    (setattrofunc)sdl_PixelFormat_setattro,/* tp_setattro */
     0,                              /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     "SDL PixelFormat Structure",    /* tp_doc */
@@ -83,7 +105,7 @@ PyTypeObject sdl_PixelFormatType = {
     0,                              /* tp_iter */
     0,                              /* tp_iternext */
     0,                              /* tp_methods */
-    sdl_PixelFormat_members,        /* tp_members */
+    0,                              /* tp_members */
     0,                              /* tp_getset */
     0,                              /* tp_base */
     0,                              /* tp_dict */
@@ -113,16 +135,10 @@ PyObject *sdl_PixelFormat_from_SDL_PixelFormat(SDL_PixelFormat *pf)
     if (pf == NULL)
         Py_RETURN_NONE;
     PyObject *palette = sdl_Palette_from_SDL_Palette(pf->palette);
-    PyObject *args = Py_BuildValue("Oiiiiiiiiiiiiiiii",
-            palette, pf->BitsPerPixel, pf->BytesPerPixel,
-            pf->Rloss, pf->Gloss, pf->Bloss, pf->Aloss,
-            pf->Rshift, pf->Gshift, pf->Bshift, pf->Ashift,
-            pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask,
-            pf->colorkey, pf->alpha);
-    PyObject *pixelformat = PyObject_CallObject(
-            (PyObject *) &sdl_PixelFormatType,
-            args);
-    Py_DECREF(args);
-    Py_DECREF(palette);
-    return pixelformat;
+    sdl_PixelFormat *pixelformat = PyObject_New(sdl_PixelFormat,
+            &sdl_PixelFormatType);
+    pixelformat->palette = palette;
+    pixelformat->pf = pf;
+    pixelformat->ok_to_dealloc = 1;
+    return (PyObject *) pixelformat;
 }

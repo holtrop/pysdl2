@@ -5,6 +5,7 @@
 static int
 sdl_Palette_init(sdl_Palette *self, PyObject *args, PyObject *kwargs)
 {
+    self->ok_to_dealloc = 0;
     PyErr_SetString(PyExc_TypeError, "Palette objects are not constructible");
     return -1;
 }
@@ -28,9 +29,19 @@ sdl_Palette_getattro(sdl_Palette *self, PyObject *attr)
     if (!strcmp(aname, "ncolors"))
         return PyInt_FromLong(self->palette->ncolors);
     else if (!strcmp(aname, "colors"))
+    {
+        Py_INCREF(self->colors);
         return self->colors;
+    }
     PyErr_SetString(PyExc_AttributeError, "Invalid attribute");
     return NULL;
+}
+
+static void
+sdl_Palette_dealloc(sdl_Palette *self)
+{
+    if (self->ok_to_dealloc)
+        Py_DECREF(self->colors);
 }
 
 PyTypeObject sdl_PaletteType = {
@@ -39,7 +50,7 @@ PyTypeObject sdl_PaletteType = {
     "SDL.Palette",                  /* tp_name */
     sizeof(sdl_Palette),            /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_Palette_dealloc,/* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -100,5 +111,6 @@ PyObject *sdl_Palette_from_SDL_Palette(SDL_Palette *p)
     sdl_Palette *palette = PyObject_New(sdl_Palette, &sdl_PaletteType);
     palette->palette = p;
     palette->colors = colors;
+    palette->ok_to_dealloc = 1;
     return (PyObject *) palette;
 }
