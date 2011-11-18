@@ -106,15 +106,31 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
  *************************************************************************/
 PYFUNC(Flip, "swap SDL screen buffers")
 {
-    PyObject *surf;
-    if (!PyArg_ParseTuple(args, "O", &surf))
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
         return NULL;
-    if (!PyObject_IsInstance(surf, sdl_Surface_get_type()))
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
     {
         PyErr_SetString(PyExc_ValueError, "Invalid parameter");
         return NULL;
     }
-    return Py_BuildValue("i", SDL_Flip(sdl_Surface_get_SDL_Surface(surf)));
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    return Py_BuildValue("i", SDL_Flip(ss));
+}
+
+PYFUNC(FreeSurface, "delete an SDL.Surface")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_FreeSurface(ss);
+    Py_RETURN_NONE;
 }
 
 PYFUNC(GetVideoInfo, "return information about current video hardware")
@@ -167,6 +183,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WasInit),
     /* Video */
     PYFUNC_REF(Flip),
+    PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(SetVideoMode),
