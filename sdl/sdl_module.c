@@ -104,6 +104,19 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(Flip, "swap SDL screen buffers")
+{
+    PyObject *surf;
+    if (!PyArg_ParseTuple(args, "O", &surf))
+        return NULL;
+    if (!PyObject_IsInstance(surf, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    return Py_BuildValue("i", SDL_Flip(sdl_Surface_get_SDL_Surface(surf)));
+}
+
 PYFUNC(GetVideoInfo, "return information about current video hardware")
 {
     const SDL_VideoInfo *vi = SDL_GetVideoInfo();
@@ -153,6 +166,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     /* Video */
+    PYFUNC_REF(Flip),
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(SetVideoMode),
