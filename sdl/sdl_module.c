@@ -343,6 +343,15 @@ PYFUNC(EVENTMASK, "return a mask for the specified event")
     return Py_BuildValue("I", SDL_EVENTMASK(evt));
 }
 
+PYFUNC(EventState, "set the state of processing certain events")
+{
+    unsigned int type;
+    int state;
+    if (!PyArg_ParseTuple(args, "Ii", &type, &state))
+        return NULL;
+    return Py_BuildValue("I", SDL_EventState(type, state));
+}
+
 PYFUNC(PeepEvents,
         "check the event queue for events and optionally return them")
 {
@@ -448,6 +457,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Events */
     PYFUNC_REF(EVENTMASK),
+    PYFUNC_REF(EventState),
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
