@@ -352,6 +352,18 @@ PYFUNC(EventState, "set the state of processing certain events")
     return Py_BuildValue("I", SDL_EventState(type, state));
 }
 
+PYFUNC(GetKeyState, "get a snapshot of the current keyboard state")
+{
+    int numkeys;
+    Uint8 *keys = SDL_GetKeyState(&numkeys);
+    PyObject *lst = PyList_New(numkeys);
+    for (int i = 0; i < numkeys; i++)
+    {
+        PyList_SetItem(lst, i, Py_BuildValue("i", keys[i]));
+    }
+    return lst;
+}
+
 PYFUNC(PeepEvents,
         "check the event queue for events and optionally return them")
 {
@@ -458,6 +470,7 @@ static PyMethodDef sdl_methods[] = {
     /* Events */
     PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(EventState),
+    PYFUNC_REF(GetKeyState),
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
