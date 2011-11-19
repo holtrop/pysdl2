@@ -376,6 +376,11 @@ PYFUNC(EventState, "set the state of processing certain events")
     return Py_BuildValue("I", SDL_EventState(type, state));
 }
 
+PYFUNC(GetAppState, "get the state of the application")
+{
+    return Py_BuildValue("I", SDL_GetAppState());
+}
+
 PYFUNC(GetKeyName, "get the name of an SDL keysym")
 {
     unsigned int key;
@@ -533,6 +538,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(EnableKeyRepeat),
     PYFUNC_REF(EnableUNICODE),
     PYFUNC_REF(EventState),
+    PYFUNC_REF(GetAppState),
     PYFUNC_REF(GetKeyName),
     PYFUNC_REF(GetKeyState),
     PYFUNC_REF(GetModState),
