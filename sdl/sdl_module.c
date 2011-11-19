@@ -335,6 +335,14 @@ PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(BUTTON, "return a mask for the specified mouse button")
+{
+    Uint32 button;
+    if (!PyArg_ParseTuple(args, "I", &button))
+        return NULL;
+    return Py_BuildValue("I", SDL_BUTTON(button));
+}
+
 PYFUNC(EVENTMASK, "return a mask for the specified event")
 {
     Uint32 evt;
@@ -513,6 +521,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
     /* Events */
+    PYFUNC_REF(BUTTON),
     PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(EnableKeyRepeat),
     PYFUNC_REF(EnableUNICODE),
