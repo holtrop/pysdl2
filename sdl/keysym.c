@@ -4,6 +4,7 @@
 static int
 sdl_keysym_init(sdl_keysym *self, PyObject *args, PyObject *kwargs)
 {
+    self->event = NULL;
     PyErr_SetString(PyExc_TypeError,
             "keysym objects are not constructible");
     return -1;
@@ -56,13 +57,19 @@ sdl_keysym_getattro(sdl_keysym *self, PyObject *attr)
     return NULL;
 }
 
+static void
+sdl_keysym_dealloc(sdl_keysym *self)
+{
+    Py_XDECREF(self->event);
+}
+
 PyTypeObject sdl_keysymType = {
     PyObject_HEAD_INIT(NULL)
     0,                              /* ob_size */
     "SDL.keysym",                   /* tp_name */
     sizeof(sdl_keysym),             /* tp_basicsize */
     0,                              /* tp_itemsize */
-    0,                              /* tp_dealloc */
+    (destructor)sdl_keysym_dealloc, /* tp_dealloc */
     0,                              /* tp_print */
     0,                              /* tp_getattr */
     0,                              /* tp_setattr */
@@ -116,7 +123,16 @@ PyObject *sdl_keysym_from_SDL_keysym(SDL_keysym *ks)
         Py_RETURN_NONE;
     sdl_keysym *k = PyObject_New(sdl_keysym, &sdl_keysymType);
     k->ks = ks;
+    k->event = NULL;
     return (PyObject *) k;
+}
+
+PyObject *sdl_keysym_from_SDL_keysym_and_event(SDL_keysym *ks, sdl_Event *evt)
+{
+    PyObject *k = sdl_keysym_from_SDL_keysym(ks);
+    ((sdl_keysym *) k)->event = (PyObject *) evt;
+    Py_INCREF((PyObject *) evt);
+    return k;
 }
 
 PyObject *sdl_keysym_get_type(void)
