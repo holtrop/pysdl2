@@ -335,6 +335,14 @@ PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(EVENTMASK, "return a mask for the specified event")
+{
+    Uint32 evt;
+    if (!PyArg_ParseTuple(args, "I", &evt))
+        return NULL;
+    return Py_BuildValue("I", SDL_EVENTMASK(evt));
+}
+
 PYFUNC(PumpEvents,
         "pump the event loop, gathering events from the input devices")
 {
@@ -375,6 +383,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
     /* Events */
+    PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(PumpEvents),
     {NULL, NULL, 0, NULL}
 };
