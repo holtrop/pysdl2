@@ -817,6 +817,10 @@ initSDL(void)
     MAKE_PY_CONST(m, "PEEKEVENT", SDL_PEEKEVENT);
     MAKE_PY_CONST(m, "GETEVENT", SDL_GETEVENT);
 
+    MAKE_PY_CONST(m, "IGNORE", SDL_IGNORE);
+    MAKE_PY_CONST(m, "ENABLE", SDL_ENABLE);
+    MAKE_PY_CONST(m, "QUERY", SDL_QUERY);
+
     sdl_VersionInfo_register_type(m);
 
     sdl_Color_register_type(m);

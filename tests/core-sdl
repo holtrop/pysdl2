@@ -363,6 +363,10 @@ check_const('ADDEVENT')
 check_const('PEEKEVENT')
 check_const('GETEVENT')
 
+check_const('IGNORE')
+check_const('ENABLE')
+check_const('QUERY')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 
