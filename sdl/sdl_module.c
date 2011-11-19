@@ -343,6 +343,14 @@ PYFUNC(EVENTMASK, "return a mask for the specified event")
     return Py_BuildValue("I", SDL_EVENTMASK(evt));
 }
 
+PYFUNC(EnableKeyRepeat, "set keyboard repeat rate")
+{
+    int delay, interval;
+    if (!PyArg_ParseTuple(args, "ii", &delay, &interval))
+        return NULL;
+    return Py_BuildValue("i", SDL_EnableKeyRepeat(delay, interval));
+}
+
 PYFUNC(EnableUNICODE, "enable UNICODE translation")
 {
     int enable;
@@ -499,6 +507,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Events */
     PYFUNC_REF(EVENTMASK),
+    PYFUNC_REF(EnableKeyRepeat),
     PYFUNC_REF(EnableUNICODE),
     PYFUNC_REF(EventState),
     PYFUNC_REF(GetKeyName),
