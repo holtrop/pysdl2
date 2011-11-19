@@ -408,6 +408,13 @@ PYFUNC(GetMouseState, "get the current state of the mouse")
     return Py_BuildValue("iiI", x, y, button_mask);
 }
 
+PYFUNC(GetRelativeMouseState, "get the relative change of the mouse")
+{
+    int x, y;
+    Uint8 button_mask = SDL_GetRelativeMouseState(&x, &y);
+    return Py_BuildValue("iiI", x, y, button_mask);
+}
+
 PYFUNC(PeepEvents,
         "check the event queue for events and optionally return them")
 {
@@ -530,6 +537,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetKeyState),
     PYFUNC_REF(GetModState),
     PYFUNC_REF(GetMouseState),
+    PYFUNC_REF(GetRelativeMouseState),
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
