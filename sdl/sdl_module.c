@@ -388,6 +388,19 @@ PYFUNC(PumpEvents,
     Py_RETURN_NONE;
 }
 
+PYFUNC(PushEvent, "push an event onto the event queue")
+{
+    PyObject *evto;
+    if (!PyArg_ParseTuple(args, "O", &evto))
+        return NULL;
+    if (!PyObject_IsInstance(evto, sdl_Event_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    return Py_BuildValue("i", SDL_PushEvent(sdl_Event_get_SDL_Event(evto)));
+}
+
 PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 {
     SDL_Event *evt = malloc(sizeof(SDL_Event));
@@ -438,6 +451,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
+    PYFUNC_REF(PushEvent),
     PYFUNC_REF(WaitEvent),
     {NULL, NULL, 0, NULL}
 };
