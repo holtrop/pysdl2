@@ -427,6 +427,15 @@ PYFUNC(PushEvent, "push an event onto the event queue")
     return Py_BuildValue("i", SDL_PushEvent(sdl_Event_get_SDL_Event(evto)));
 }
 
+PYFUNC(SetModState, "set the current key modifier state")
+{
+    unsigned int modstate;
+    if (!PyArg_ParseTuple(args, "I", &modstate))
+        return NULL;
+    SDL_SetModState(modstate);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 {
     SDL_Event *evt = malloc(sizeof(SDL_Event));
@@ -481,6 +490,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
     PYFUNC_REF(PushEvent),
+    PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
     {NULL, NULL, 0, NULL}
 };
