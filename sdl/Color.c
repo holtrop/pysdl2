@@ -57,6 +57,7 @@ sdl_Color_dealloc(sdl_Color *self)
 {
     if (self->owner)
         free(self->color);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_ColorType = {

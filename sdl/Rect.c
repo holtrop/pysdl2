@@ -61,6 +61,7 @@ sdl_Rect_dealloc(sdl_Rect *self)
 {
     if (self->owner)
         free(self->rect);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_RectType = {

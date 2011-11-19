@@ -150,6 +150,7 @@ sdl_Surface_dealloc(sdl_Surface *self)
         Py_DECREF(self->format);
         Py_DECREF(self->clip_rect);
     }
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_SurfaceType = {

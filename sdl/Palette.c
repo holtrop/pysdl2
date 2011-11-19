@@ -42,6 +42,7 @@ sdl_Palette_dealloc(sdl_Palette *self)
 {
     if (self->ok_to_dealloc)
         Py_DECREF(self->colors);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_PaletteType = {

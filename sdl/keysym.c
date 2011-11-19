@@ -61,6 +61,7 @@ static void
 sdl_keysym_dealloc(sdl_keysym *self)
 {
     Py_XDECREF(self->event);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_keysymType = {

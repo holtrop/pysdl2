@@ -181,6 +181,7 @@ sdl_Event_dealloc(sdl_Event *self)
         /* we're deallocating a subevent object */
         Py_DECREF(self->toplevel);
     }
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_EventType = {

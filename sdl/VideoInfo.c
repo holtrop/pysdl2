@@ -65,6 +65,7 @@ sdl_VideoInfo_dealloc(sdl_VideoInfo *self)
 {
     if (self->ok_to_dealloc)
         Py_DECREF(self->vfmt);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_VideoInfoType = {

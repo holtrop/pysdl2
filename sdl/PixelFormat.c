@@ -73,6 +73,7 @@ sdl_PixelFormat_dealloc(sdl_PixelFormat *self)
 {
     if (self->ok_to_dealloc)
         Py_DECREF(self->palette);
+    PyObject_Del(self);
 }
 
 PyTypeObject sdl_PixelFormatType = {
