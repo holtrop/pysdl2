@@ -343,6 +343,14 @@ PYFUNC(EVENTMASK, "return a mask for the specified event")
     return Py_BuildValue("I", SDL_EVENTMASK(evt));
 }
 
+PYFUNC(EnableUNICODE, "enable UNICODE translation")
+{
+    int enable;
+    if (!PyArg_ParseTuple(args, "i", &enable))
+        return NULL;
+    return Py_BuildValue("i", SDL_EnableUNICODE(enable));
+}
+
 PYFUNC(EventState, "set the state of processing certain events")
 {
     unsigned int type;
@@ -491,6 +499,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Events */
     PYFUNC_REF(EVENTMASK),
+    PYFUNC_REF(EnableUNICODE),
     PYFUNC_REF(EventState),
     PYFUNC_REF(GetKeyName),
     PYFUNC_REF(GetKeyState),
