@@ -364,6 +364,11 @@ PYFUNC(GetKeyState, "get a snapshot of the current keyboard state")
     return lst;
 }
 
+PYFUNC(GetModState, "get the state of modifier keys")
+{
+    return Py_BuildValue("I", SDL_GetModState());
+}
+
 PYFUNC(PeepEvents,
         "check the event queue for events and optionally return them")
 {
@@ -471,6 +476,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(EventState),
     PYFUNC_REF(GetKeyState),
+    PYFUNC_REF(GetModState),
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
