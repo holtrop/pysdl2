@@ -321,6 +321,7 @@ check_const('GL_MULTISAMPLESAMPLES')
 check_const('GL_SWAP_CONTROL')
 check_const('GL_ACCELERATED_VISUAL')
 
+check_const('NOEVENT')
 check_const('ACTIVEEVENT')
 check_const('KEYDOWN')
 check_const('KEYUP')
