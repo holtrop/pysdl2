@@ -420,6 +420,14 @@ PYFUNC(GetRelativeMouseState, "get the relative change of the mouse")
     return Py_BuildValue("iiI", x, y, button_mask);
 }
 
+PYFUNC(JoystickEventState, "enable/disable joystick event polling")
+{
+    int state;
+    if (!PyArg_ParseTuple(args, "i", &state))
+        return NULL;
+    return Py_BuildValue("i", SDL_JoystickEventState(state));
+}
+
 PYFUNC(PeepEvents,
         "check the event queue for events and optionally return them")
 {
@@ -544,6 +552,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetModState),
     PYFUNC_REF(GetMouseState),
     PYFUNC_REF(GetRelativeMouseState),
+    PYFUNC_REF(JoystickEventState),
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
