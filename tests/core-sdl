@@ -367,6 +367,12 @@ check_const('IGNORE')
 check_const('ENABLE')
 check_const('QUERY')
 
+check_const('BUTTON_LMASK')
+check_const('BUTTON_MMASK')
+check_const('BUTTON_RMASK')
+check_const('BUTTON_X1MASK')
+check_const('BUTTON_X2MASK')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 
