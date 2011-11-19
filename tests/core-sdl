@@ -373,6 +373,10 @@ check_const('BUTTON_RMASK')
 check_const('BUTTON_X1MASK')
 check_const('BUTTON_X2MASK')
 
+check_const('APPMOUSEFOCUS')
+check_const('APPINPUTFOCUS')
+check_const('APPACTIVE')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 
