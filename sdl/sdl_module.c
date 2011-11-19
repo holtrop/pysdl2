@@ -333,6 +333,16 @@ PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 }
 
 /**************************************************************************
+ * SDL Video Functionality                                                *
+ *************************************************************************/
+PYFUNC(PumpEvents,
+        "pump the event loop, gathering events from the input devices")
+{
+    SDL_PumpEvents();
+    Py_RETURN_NONE;
+}
+
+/**************************************************************************
  * Python SDL Methods                                                     *
  *************************************************************************/
 static PyMethodDef sdl_methods[] = {
@@ -364,6 +374,8 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(UpdateRects),
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
+    /* Events */
+    PYFUNC_REF(PumpEvents),
     {NULL, NULL, 0, NULL}
 };
 
