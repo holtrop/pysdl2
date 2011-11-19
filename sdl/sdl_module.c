@@ -388,6 +388,19 @@ PYFUNC(PumpEvents,
     Py_RETURN_NONE;
 }
 
+PYFUNC(WaitEvent, "wait indefinitely for the next available event")
+{
+    SDL_Event *evt = malloc(sizeof(SDL_Event));
+    int ret = SDL_WaitEvent(evt);
+    if (ret == 0)
+    {
+        PyErr_SetString(PyExc_ValueError, "error in SDL_WaitEvent()");
+        return NULL;
+    }
+    /* transfer ownership of the evt pointer */
+    return sdl_Event_from_SDL_Event(evt);
+}
+
 /**************************************************************************
  * Python SDL Methods                                                     *
  *************************************************************************/
@@ -425,6 +438,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
+    PYFUNC_REF(WaitEvent),
     {NULL, NULL, 0, NULL}
 };
 
