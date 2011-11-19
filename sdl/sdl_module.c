@@ -368,6 +368,19 @@ PYFUNC(PeepEvents,
     return eventso;
 }
 
+PYFUNC(PollEvent, "poll for any currently pending event")
+{
+    SDL_Event *evt = malloc(sizeof(SDL_Event));
+    int n = SDL_PollEvent(evt);
+    if (n > 0)
+    {
+        /* transfer ownership of the evt pointer */
+        return sdl_Event_from_SDL_Event(evt);
+    }
+    free(evt);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(PumpEvents,
         "pump the event loop, gathering events from the input devices")
 {
@@ -410,6 +423,7 @@ static PyMethodDef sdl_methods[] = {
     /* Events */
     PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(PeepEvents),
+    PYFUNC_REF(PollEvent),
     PYFUNC_REF(PumpEvents),
     {NULL, NULL, 0, NULL}
 };
