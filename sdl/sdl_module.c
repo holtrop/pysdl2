@@ -343,6 +343,31 @@ PYFUNC(EVENTMASK, "return a mask for the specified event")
     return Py_BuildValue("I", SDL_EVENTMASK(evt));
 }
 
+PYFUNC(PeepEvents,
+        "check the event queue for events and optionally return them")
+{
+    int numevents;
+    Uint32 action, mask;
+    if (!PyArg_ParseTuple(args, "iII", &numevents, &action, &mask))
+        return NULL;
+    SDL_Event *events = malloc(numevents * sizeof(SDL_Event));
+    int num_retrieved = SDL_PeepEvents(events, numevents, action, mask);
+    if (num_retrieved < 0)
+    {
+        PyErr_SetString(PyExc_ValueError, "error in SDL_PeepEvents()");
+        return NULL;
+    }
+    PyObject *eventso = PyList_New(num_retrieved);
+    for (int i = 0; i < num_retrieved; i++)
+    {
+        SDL_Event *evt = malloc(sizeof(SDL_Event));
+        memcpy(evt, &events[i], sizeof(SDL_Event));
+        PyList_SetItem(eventso, i, sdl_Event_from_SDL_Event(evt));
+    }
+    free(events);
+    return eventso;
+}
+
 PYFUNC(PumpEvents,
         "pump the event loop, gathering events from the input devices")
 {
@@ -384,6 +409,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Events */
     PYFUNC_REF(EVENTMASK),
+    PYFUNC_REF(PeepEvents),
     PYFUNC_REF(PumpEvents),
     {NULL, NULL, 0, NULL}
 };
