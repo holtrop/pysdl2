@@ -9,6 +9,7 @@
 #include "PixelFormat.h"
 #include "VideoInfo.h"
 #include "Surface.h"
+#include "keysym.h"
 
 /**************************************************************************
  * SDL Core Functionality                                                 *
@@ -716,4 +717,6 @@ initSDL(void)
     sdl_VideoInfo_register_type(m);
 
     sdl_Surface_register_type(m);
+
+    sdl_keysym_register_type(m);
 }
