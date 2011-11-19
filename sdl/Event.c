@@ -418,6 +418,9 @@ SDL_Event *sdl_Event_get_SDL_Event(PyObject *event)
 PyObject *sdl_Event_from_SDL_Event(SDL_Event *event)
 {
     sdl_Event *sdl_event = PyObject_New(sdl_Event, &sdl_EventType);
+    sdl_event->subevent_type = SDL_NOEVENT; /* a top-level event object */
+    sdl_event->event = event;
+    sdl_event->toplevel = NULL;
     return (PyObject *) sdl_event;
 }
 
