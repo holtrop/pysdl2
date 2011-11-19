@@ -352,6 +352,14 @@ PYFUNC(EventState, "set the state of processing certain events")
     return Py_BuildValue("I", SDL_EventState(type, state));
 }
 
+PYFUNC(GetKeyName, "get the name of an SDL keysym")
+{
+    unsigned int key;
+    if (!PyArg_ParseTuple(args, "I", &key))
+        return NULL;
+    return Py_BuildValue("s", SDL_GetKeyName(key));
+}
+
 PYFUNC(GetKeyState, "get a snapshot of the current keyboard state")
 {
     int numkeys;
@@ -484,6 +492,7 @@ static PyMethodDef sdl_methods[] = {
     /* Events */
     PYFUNC_REF(EVENTMASK),
     PYFUNC_REF(EventState),
+    PYFUNC_REF(GetKeyName),
     PYFUNC_REF(GetKeyState),
     PYFUNC_REF(GetModState),
     PYFUNC_REF(PeepEvents),
