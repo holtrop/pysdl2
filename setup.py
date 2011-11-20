@@ -8,10 +8,16 @@ def get_sources_from_dir(d):
     return map(lambda x: os.path.join(d, x),
         filter(lambda x: re.search(r'\.cc?$', x), os.listdir(d)))
 
+extra_compile_args = ['-std=gnu99', '-I%s' % os.getcwd()]
+extra_link_args = []
+if os.path.exists('C:\\apps\\SDL-1.2.14'):
+    extra_compile_args.append('-Ic:\\apps\\SDL-1.2.14\\include')
+    extra_link_args.append('-Lc:\\apps\\SDL-1.2.14\\lib')
 sdl_sources = get_sources_from_dir('sdl')
 sdl_module = Extension('SDL',
         sources = sdl_sources,
-        extra_compile_args = ['-std=gnu99', '-I%s' % os.getcwd()],
+        extra_compile_args = extra_compile_args,
+        extra_link_args = extra_link_args,
         libraries = ['SDL'])
 
 setup(name = 'PySDL2',
