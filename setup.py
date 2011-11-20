@@ -20,7 +20,7 @@ sdl_module = Extension('SDL',
         extra_link_args = extra_link_args,
         libraries = ['SDL'])
 
-setup(name = 'PySDL2',
+setup(name = 'pysdl2',
         version = '0.1',
         description = 'Python Bindings for SDL',
         author = 'Josh Holtrop',
