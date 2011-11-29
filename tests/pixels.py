@@ -39,6 +39,8 @@ def main():
                     break
                 elif evt.key.keysym.sym == SDL.K_SPACE:
                     invert_surface(surf)
+                elif evt.key.keysym.sym == SDL.K_F1:
+                    SDL.WM_ToggleFullScreen(surf)
 
     SDL.Quit()
 
