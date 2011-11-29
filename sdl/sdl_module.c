@@ -343,6 +343,11 @@ PYFUNC(WM_GetCaption, "get the window title and icon name")
     return Py_BuildValue("ss", title, icon);
 }
 
+PYFUNC(WM_IconifyWindow, "iconify/minimize the window")
+{
+    return Py_BuildValue("i", SDL_WM_IconifyWindow());
+}
+
 PYFUNC(WM_SetCaption, "set the window title and icon name")
 {
     const char *title;
@@ -593,6 +598,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Window Management */
     PYFUNC_REF(WM_GetCaption),
+    PYFUNC_REF(WM_IconifyWindow),
     PYFUNC_REF(WM_SetCaption),
     PYFUNC_REF(WM_SetIcon),
     /* Events */
