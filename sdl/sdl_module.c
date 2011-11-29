@@ -587,6 +587,15 @@ PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 }
 
 /**************************************************************************
+ * SDL Time Functionality                                                 *
+ *************************************************************************/
+PYFUNC(GetTicks,
+        "get the number of milliseconds since SDL library initialization")
+{
+    return Py_BuildValue("I", SDL_GetTicks());
+}
+
+/**************************************************************************
  * Python SDL Methods                                                     *
  *************************************************************************/
 static PyMethodDef sdl_methods[] = {
@@ -644,6 +653,8 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(PushEvent),
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
+    /* Time */
+    PYFUNC_REF(GetTicks),
     {NULL, NULL, 0, NULL}
 };
 
