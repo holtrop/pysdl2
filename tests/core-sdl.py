@@ -382,6 +382,9 @@ check_const('GRAB_QUERY')
 check_const('GRAB_OFF')
 check_const('GRAB_ON')
 
+check_const('FALSE')
+check_const('TRUE')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 

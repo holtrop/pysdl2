@@ -1105,6 +1105,9 @@ initSDL(void)
     MAKE_PY_CONST(m, "GRAB_OFF", SDL_GRAB_OFF);
     MAKE_PY_CONST(m, "GRAB_ON", SDL_GRAB_ON);
 
+    MAKE_PY_CONST(m, "FALSE", SDL_FALSE);
+    MAKE_PY_CONST(m, "TRUE", SDL_TRUE);
+
     sdl_VersionInfo_register_type(m);
 
     sdl_Color_register_type(m);
