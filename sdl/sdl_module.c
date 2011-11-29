@@ -10,6 +10,7 @@
 #include "VideoInfo.h"
 #include "Surface.h"
 #include "keysym.h"
+#include "TimerID.h"
 
 /**************************************************************************
  * SDL Core Functionality                                                 *
@@ -1065,4 +1066,6 @@ initSDL(void)
     sdl_keysym_register_type(m);
 
     sdl_Event_register_type(m);
+
+    sdl_TimerID_register_type(m);
 }
