@@ -335,6 +335,14 @@ PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 /**************************************************************************
  * SDL Window Management Functionality                                    *
  *************************************************************************/
+PYFUNC(WM_GetCaption, "get the window title and icon name")
+{
+    char *title;
+    char *icon;
+    SDL_WM_GetCaption(&title, &icon);
+    return Py_BuildValue("ss", title, icon);
+}
+
 PYFUNC(WM_SetCaption, "set the window title and icon name")
 {
     const char *title;
@@ -569,6 +577,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
     /* Window Management */
+    PYFUNC_REF(WM_GetCaption),
     PYFUNC_REF(WM_SetCaption),
     /* Events */
     PYFUNC_REF(BUTTON),
