@@ -339,6 +339,7 @@ check_const('QUIT')
 check_const('USEREVENT')
 check_const('SYSWMEVENT')
 check_const('ALLEVENTS')
+check_const('NUMEVENTS')
 
 check_const('ACTIVEEVENTMASK')
 check_const('KEYDOWNMASK')
@@ -376,6 +377,10 @@ check_const('BUTTON_X2MASK')
 check_const('APPMOUSEFOCUS')
 check_const('APPINPUTFOCUS')
 check_const('APPACTIVE')
+
+check_const('GRAB_QUERY')
+check_const('GRAB_OFF')
+check_const('GRAB_ON')
 
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
