@@ -353,6 +353,21 @@ PYFUNC(WM_SetCaption, "set the window title and icon name")
     Py_RETURN_NONE;
 }
 
+PYFUNC(WM_SetIcon, "set the icon for the display window")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_WM_SetIcon(ss, NULL);
+    Py_RETURN_NONE;
+}
+
 /**************************************************************************
  * SDL Event Functionality                                                *
  *************************************************************************/
@@ -579,6 +594,7 @@ static PyMethodDef sdl_methods[] = {
     /* Window Management */
     PYFUNC_REF(WM_GetCaption),
     PYFUNC_REF(WM_SetCaption),
+    PYFUNC_REF(WM_SetIcon),
     /* Events */
     PYFUNC_REF(BUTTON),
     PYFUNC_REF(EVENTMASK),
