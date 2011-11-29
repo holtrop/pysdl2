@@ -595,6 +595,15 @@ PYFUNC(GetTicks,
     return Py_BuildValue("I", SDL_GetTicks());
 }
 
+PYFUNC(Delay, "wait a specified number of milliseconds before returning")
+{
+    Uint32 ms;
+    if (!PyArg_ParseTuple(args, "I", &ms))
+        return NULL;
+    SDL_Delay(ms);
+    Py_RETURN_NONE;
+}
+
 /**************************************************************************
  * Python SDL Methods                                                     *
  *************************************************************************/
@@ -654,6 +663,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
     /* Time */
+    PYFUNC_REF(Delay),
     PYFUNC_REF(GetTicks),
     {NULL, NULL, 0, NULL}
 };
