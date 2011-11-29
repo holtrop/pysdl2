@@ -41,6 +41,13 @@ def main():
                     invert_surface(surf)
                 elif evt.key.keysym.sym == SDL.K_F1:
                     SDL.WM_ToggleFullScreen(surf)
+                elif evt.key.keysym.sym == SDL.K_F2:
+                    grab = SDL.WM_GrabInput(SDL.GRAB_QUERY)
+                    if grab == SDL.GRAB_ON:
+                        grab = SDL.GRAB_OFF
+                    else:
+                        grab = SDL.GRAB_ON
+                    SDL.WM_GrabInput(grab)
 
     SDL.Quit()
 

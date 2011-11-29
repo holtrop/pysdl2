@@ -343,6 +343,14 @@ PYFUNC(WM_GetCaption, "get the window title and icon name")
     return Py_BuildValue("ss", title, icon);
 }
 
+PYFUNC(WM_GrabInput, "grab mouse and keyboard input")
+{
+    Uint32 mode;
+    if (!PyArg_ParseTuple(args, "I", &mode))
+        return NULL;
+    return Py_BuildValue("I", SDL_WM_GrabInput(mode));
+}
+
 PYFUNC(WM_IconifyWindow, "iconify/minimize the window")
 {
     return Py_BuildValue("i", SDL_WM_IconifyWindow());
@@ -612,6 +620,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VideoModeOK),
     /* Window Management */
     PYFUNC_REF(WM_GetCaption),
+    PYFUNC_REF(WM_GrabInput),
     PYFUNC_REF(WM_IconifyWindow),
     PYFUNC_REF(WM_SetCaption),
     PYFUNC_REF(WM_SetIcon),
