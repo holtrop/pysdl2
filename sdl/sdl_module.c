@@ -373,6 +373,20 @@ PYFUNC(WM_SetIcon, "set the icon for the display window")
     Py_RETURN_NONE;
 }
 
+PYFUNC(WM_ToggleFullScreen, "toggle fullscreen mode")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    return Py_BuildValue("i", SDL_WM_ToggleFullScreen(ss));
+}
+
 /**************************************************************************
  * SDL Event Functionality                                                *
  *************************************************************************/
@@ -601,6 +615,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WM_IconifyWindow),
     PYFUNC_REF(WM_SetCaption),
     PYFUNC_REF(WM_SetIcon),
+    PYFUNC_REF(WM_ToggleFullScreen),
     /* Events */
     PYFUNC_REF(BUTTON),
     PYFUNC_REF(EVENTMASK),
