@@ -590,10 +590,42 @@ PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 /**************************************************************************
  * SDL Time Functionality                                                 *
  *************************************************************************/
-PYFUNC(GetTicks,
-        "get the number of milliseconds since SDL library initialization")
+static Uint32 timer_callback(Uint32 interval, void *param)
 {
-    return Py_BuildValue("I", SDL_GetTicks());
+    sdl_TimerID *sdl_timerid = (sdl_TimerID *) param;
+    sdl_Event *sdl_event = (sdl_Event *) sdl_timerid->evt;
+    if (sdl_event->subevent_type == SDL_NOEVENT)
+    {
+        SDL_Event *evt = sdl_Event_get_SDL_Event((PyObject *) sdl_event);
+        if (PYSDL_EVENT_IS_USEREVENT(evt))
+        {
+            Py_XINCREF(sdl_event->data1);
+            evt->user.data1 = sdl_event->data1;
+            Py_XINCREF(sdl_event->data2);
+            evt->user.data2 = sdl_event->data2;
+        }
+        SDL_PushEvent(evt);
+    }
+    return interval;
+}
+
+PYFUNC(AddTimer,
+        "add a timer which will inject an event at the specified interval")
+{
+    Uint32 interval;
+    PyObject *evto;
+    if (!PyArg_ParseTuple(args, "IO", &interval, &evto))
+        return NULL;
+    if (!PyObject_IsInstance(evto, sdl_Event_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    PyObject *sdl_timerid = sdl_TimerID_build(evto);
+    SDL_TimerID tid = SDL_AddTimer(interval, timer_callback, sdl_timerid);
+    sdl_TimerID_set_TimerID(sdl_timerid, tid);
+    Py_INCREF(sdl_timerid);     /* reference to be removed in RemoveTimer */
+    return sdl_timerid;
 }
 
 PYFUNC(Delay, "wait a specified number of milliseconds before returning")
@@ -603,6 +635,28 @@ PYFUNC(Delay, "wait a specified number of milliseconds before returning")
         return NULL;
     SDL_Delay(ms);
     Py_RETURN_NONE;
+}
+
+PYFUNC(GetTicks,
+        "get the number of milliseconds since SDL library initialization")
+{
+    return Py_BuildValue("I", SDL_GetTicks());
+}
+
+PYFUNC(RemoveTimer, "remove a timer which was added with SDL.AddTimer")
+{
+    PyObject *timerido;
+    if (!PyArg_ParseTuple(args, "O", &timerido))
+        return NULL;
+    if (!PyObject_IsInstance(timerido, sdl_TimerID_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_TimerID tid = sdl_TimerID_get_SDL_TimerID(timerido);
+    SDL_bool res = SDL_RemoveTimer(tid);
+    Py_DECREF(timerido);
+    return Py_BuildValue("i", res);
 }
 
 /**************************************************************************
@@ -664,8 +718,10 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
     /* Time */
+    PYFUNC_REF(AddTimer),
     PYFUNC_REF(Delay),
     PYFUNC_REF(GetTicks),
+    PYFUNC_REF(RemoveTimer),
     {NULL, NULL, 0, NULL}
 };
 

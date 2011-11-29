@@ -5,6 +5,7 @@
 static int
 sdl_TimerID_init(sdl_TimerID *self, PyObject *args, PyObject *kwargs)
 {
+    self->ok_to_dealloc = 0;
     PyErr_SetString(PyExc_TypeError, "TimerID objects are not constructible");
     return -1;
 }
@@ -26,6 +27,8 @@ sdl_TimerID_getattro(sdl_TimerID *self, PyObject *attr)
 static void
 sdl_TimerID_dealloc(sdl_TimerID *self)
 {
+    if (self->ok_to_dealloc)
+        Py_DECREF(self->evt);
     PyObject_Del(self);
 }
 
@@ -83,11 +86,26 @@ void sdl_TimerID_register_type(PyObject *module)
     PyModule_AddObject(module, "TimerID", (PyObject *) &sdl_TimerIDType);
 }
 
-PyObject *sdl_TimerID_from_SDL_TimerID(SDL_TimerID timerid)
+PyObject *sdl_TimerID_build(PyObject *evt)
 {
-    if (timerid == NULL)
-        Py_RETURN_NONE;
     sdl_TimerID *sdl_timerid = PyObject_New(sdl_TimerID, &sdl_TimerIDType);
-    sdl_timerid->timerid = timerid;
+    sdl_timerid->evt = evt;
+    sdl_timerid->ok_to_dealloc = 1;
+    sdl_timerid->timerid = NULL;
     return (PyObject *) sdl_timerid;
+}
+
+void sdl_TimerID_set_TimerID(PyObject *sdl_timerid, SDL_TimerID timerid)
+{
+    ((sdl_TimerID *) sdl_timerid)->timerid = timerid;
+}
+
+PyObject *sdl_TimerID_get_type(void)
+{
+    return (PyObject *) &sdl_TimerIDType;
+}
+
+SDL_TimerID sdl_TimerID_get_SDL_TimerID(PyObject *sdl_timerid)
+{
+    return ((sdl_TimerID *) sdl_timerid)->timerid;
 }
