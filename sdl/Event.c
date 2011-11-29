@@ -2,6 +2,10 @@
 #include "Event.h"
 #include "keysym.h"
 
+#define TOPLEVEL(evt) (((evt)->toplevel == NULL) \
+        ? evt \
+        : (sdl_Event *) (evt)->toplevel)
+
 /* Forward declarations */
 static PyObject *
 sdl_Event_init_subevent(int subevent_type, PyObject *toplevel);
@@ -17,6 +21,8 @@ sdl_Event_init(sdl_Event *self, PyObject *args, PyObject *kwargs)
     self->event = calloc(1, sizeof(SDL_Event));
     self->subevent_type = SDL_NOEVENT; /* this is the top-level event object */
     self->toplevel = NULL;
+    self->data1 = NULL;
+    self->data2 = NULL;
     return 0;
 }
 
@@ -34,12 +40,17 @@ sdl_Event_setattro(sdl_Event *self, PyObject *attr, PyObject *val)
         return -1;
     }
     const char *aname = PyString_AsString(attr);
-    if (!PyInt_Check(val))
+    long v = 0;
+    if (PyInt_Check(val))
+    {
+        v = PyInt_AsLong(val);
+    }
+    else if (!(self->subevent_type == SDL_USEREVENT &&
+            (!strcmp(aname, "data1") || !strcmp(aname, "data2"))))
     {
         PyErr_SetString(PyExc_ValueError, "Invalid parameter");
         return -1;
     }
-    long v = PyInt_AsLong(val);
 
     if (!strcmp(aname, "type"))
     {
@@ -155,6 +166,18 @@ sdl_Event_setattro(sdl_Event *self, PyObject *attr, PyObject *val)
         case SDL_USEREVENT:
             if (!strcmp(aname, "code"))
                 self->event->user.code = v;
+            else if (!strcmp(aname, "data1"))
+            {
+                Py_XDECREF(TOPLEVEL(self)->data1);
+                TOPLEVEL(self)->data1 = val;
+                Py_INCREF(TOPLEVEL(self)->data1);
+            }
+            else if (!strcmp(aname, "data2"))
+            {
+                Py_XDECREF(TOPLEVEL(self)->data2);
+                TOPLEVEL(self)->data2 = val;
+                Py_INCREF(TOPLEVEL(self)->data2);
+            }
             else
                 SETATTR_ERR();
             break;
@@ -175,6 +198,8 @@ sdl_Event_dealloc(sdl_Event *self)
     {
         /* we're deallocating the top-level event object */
         free(self->event);
+        Py_XDECREF(self->data1);
+        Py_XDECREF(self->data2);
     }
     else
     {
@@ -382,6 +407,20 @@ sdl_Event_getattro(sdl_Event *self, PyObject *attr)
         case SDL_USEREVENT:
             if (!strcmp(aname, "code"))
                 return Py_BuildValue("i", self->event->user.code);
+            else if (!strcmp(aname, "data1"))
+            {
+                if (TOPLEVEL(self)->data1 == NULL)
+                    Py_RETURN_NONE;
+                Py_INCREF(TOPLEVEL(self)->data1);
+                return TOPLEVEL(self)->data1;
+            }
+            else if (!strcmp(aname, "data2"))
+            {
+                if (TOPLEVEL(self)->data2 == NULL)
+                    Py_RETURN_NONE;
+                Py_INCREF(TOPLEVEL(self)->data2);
+                return TOPLEVEL(self)->data2;
+            }
             else
                 GETATTR_ERR();
             break;
@@ -422,6 +461,19 @@ PyObject *sdl_Event_from_SDL_Event(SDL_Event *event)
     sdl_event->subevent_type = SDL_NOEVENT; /* a top-level event object */
     sdl_event->event = event;
     sdl_event->toplevel = NULL;
+    if (PYSDL_EVENT_IS_USEREVENT(event))
+    {
+        /* convert opaque data pointers into PyObject pointers.
+         * We inherit these references as they've already been incremented
+         * before the event is pushed. */
+        sdl_event->data1 = event->user.data1;
+        sdl_event->data2 = event->user.data2;
+    }
+    else
+    {
+        sdl_event->data1 = NULL;
+        sdl_event->data2 = NULL;
+    }
     return (PyObject *) sdl_event;
 }
 
@@ -433,6 +485,8 @@ sdl_Event_init_subevent(int subevent_type, PyObject *toplevel)
     sdl_event->subevent_type = subevent_type;
     sdl_event->toplevel = toplevel;
     sdl_event->event = sdl_Event_get_SDL_Event(toplevel);
+    sdl_event->data1 = NULL;
+    sdl_event->data2 = NULL;
     Py_INCREF(toplevel);
     return (PyObject *) sdl_event;
 }

@@ -12,3 +12,5 @@
     static PyObject *pysdl_ ## name(PyObject *self, PyObject *args)
 #define PYFUNC_REF(name) {#name, pysdl_ ## name, METH_VARARGS, name ## _doc}
 
+#define PYSDL_EVENT_IS_USEREVENT(evt) \
+    (((evt)->type >= SDL_USEREVENT) && ((evt)->type < SDL_NUMEVENTS))

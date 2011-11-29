@@ -483,7 +483,22 @@ PYFUNC(PushEvent, "push an event onto the event queue")
         PyErr_SetString(PyExc_ValueError, "Invalid parameter");
         return NULL;
     }
-    return Py_BuildValue("i", SDL_PushEvent(sdl_Event_get_SDL_Event(evto)));
+    sdl_Event *sdl_event = (sdl_Event *) evto;
+    if (sdl_event->subevent_type != SDL_NOEVENT)
+    {
+        PyErr_SetString(PyExc_ValueError,
+                "Parameter must be top-level SDL.Event object");
+        return NULL;
+    }
+    SDL_Event *evt = sdl_Event_get_SDL_Event(evto);
+    if (PYSDL_EVENT_IS_USEREVENT(evt))
+    {
+        Py_XINCREF(sdl_event->data1);
+        evt->user.data1 = sdl_event->data1;
+        Py_XINCREF(sdl_event->data2);
+        evt->user.data2 = sdl_event->data2;
+    }
+    return Py_BuildValue("i", SDL_PushEvent(evt));
 }
 
 PYFUNC(SetModState, "set the current key modifier state")
@@ -952,4 +967,6 @@ initSDL(void)
     sdl_Surface_register_type(m);
 
     sdl_keysym_register_type(m);
+
+    sdl_Event_register_type(m);
 }

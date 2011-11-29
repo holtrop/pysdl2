@@ -15,6 +15,8 @@ typedef struct
     int subevent_type;
     SDL_Event *event;
     PyObject *toplevel;
+    PyObject *data1;
+    PyObject *data2;
 } sdl_Event;
 
 void sdl_Event_register_type(PyObject *module);
