@@ -333,7 +333,20 @@ PYFUNC(VideoModeOK, "check to see if a video mode is supported")
 }
 
 /**************************************************************************
- * SDL Video Functionality                                                *
+ * SDL Window Management Functionality                                    *
+ *************************************************************************/
+PYFUNC(WM_SetCaption, "set the window title and icon name")
+{
+    const char *title;
+    const char *icon;
+    if (!PyArg_ParseTuple(args, "ss", &title, &icon))
+        return NULL;
+    SDL_WM_SetCaption(title, icon);
+    Py_RETURN_NONE;
+}
+
+/**************************************************************************
+ * SDL Event Functionality                                                *
  *************************************************************************/
 PYFUNC(BUTTON, "return a mask for the specified mouse button")
 {
@@ -555,6 +568,8 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(UpdateRects),
     PYFUNC_REF(VideoDriverName),
     PYFUNC_REF(VideoModeOK),
+    /* Window Management */
+    PYFUNC_REF(WM_SetCaption),
     /* Events */
     PYFUNC_REF(BUTTON),
     PYFUNC_REF(EVENTMASK),

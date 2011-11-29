@@ -21,6 +21,7 @@ def main():
     surf = SDL.SetVideoMode(256, 256, 32, SDL.DOUBLEBUF)
 
     if surf is not None:
+        SDL.WM_SetCaption("Pixels test", "Pixels test")
         p = 0
         for y in range(256):
             for x in range(256):
