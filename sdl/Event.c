@@ -41,6 +41,7 @@ sdl_Event_setattro(sdl_Event *self, PyObject *attr, PyObject *val)
     }
     const char *aname = PyString_AsString(attr);
     long v = 0;
+    /* value should not be large enough to be a PyLong */
     if (PyInt_Check(val))
     {
         v = PyInt_AsLong(val);

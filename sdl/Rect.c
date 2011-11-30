@@ -12,6 +12,7 @@ sdl_Rect_init(sdl_Rect *self, PyObject *args, PyObject *kwargs)
 static int
 sdl_Rect_setattro(sdl_Rect *self, PyObject *attr, PyObject *val)
 {
+    /* val should not be large enough to be a PyLong */
     if (!PyString_Check(attr) || !PyInt_Check(val))
     {
         PyErr_SetString(PyExc_ValueError, "Bad parameters");

@@ -13,6 +13,7 @@ sdl_keysym_init(sdl_keysym *self, PyObject *args, PyObject *kwargs)
 static int
 sdl_keysym_setattro(sdl_keysym *self, PyObject *attr, PyObject *val)
 {
+    /* val should not be large enough to be a PyLong */
     if (!PyString_Check(attr) || !PyInt_Check(val))
     {
         PyErr_SetString(PyExc_ValueError, "Bad parameters");
