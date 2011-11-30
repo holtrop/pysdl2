@@ -22,7 +22,10 @@ PyObject *
 sdl_Surface_getitem(sdl_Surface *self, Py_ssize_t i)
 {
     if (i < 0 || i >= self->surface->w * self->surface->h)
-        Py_RETURN_NONE;
+    {
+        PyErr_SetString(PyExc_ValueError, "pixel index out of range");
+        return NULL;
+    }
     int bpp = self->surface->format->BytesPerPixel;
     uint8_t *pxl = ((uint8_t *) self->surface->pixels) + i * bpp;
     uint32_t pval = 0;
@@ -53,9 +56,15 @@ int
 sdl_Surface_setitem(sdl_Surface *self, Py_ssize_t i, PyObject *v)
 {
     if (i < 0 || i >= self->surface->w * self->surface->h)
+    {
+        PyErr_SetString(PyExc_ValueError, "pixel index out of range");
         return -1;
+    }
     if (!PyInt_Check(v))
+    {
+        PyErr_SetString(PyExc_ValueError, "pixel value is not an integer");
         return -1;
+    }
     int bpp = self->surface->format->BytesPerPixel;
     uint8_t *pxl = ((uint8_t *) self->surface->pixels) + i * bpp;
     uint32_t pval = PyInt_AsSsize_t(v);
