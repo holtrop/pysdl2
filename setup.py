@@ -21,10 +21,10 @@ sdl_module = Extension('SDL',
         libraries = ['SDL'])
 
 setup(name = 'pysdl2',
-        version = '0.1',
+        version = '0.2',
         description = 'Python Bindings for SDL',
         author = 'Josh Holtrop',
-        author_email = 'jholtrop@gmail.com',
+        author_email = 'pysdl2@gmail.com',
         ext_modules = [sdl_module],
         long_description = 'Python Bindings for SDL',
         license = 'LGPL v2.1')
