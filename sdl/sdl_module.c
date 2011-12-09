@@ -106,6 +106,21 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(CreateRGBSurface, "create an empty SDL.Surface")
+{
+    Uint32 flags, Rmask, Gmask, Bmask, Amask;
+    int width, height, bitsPerPixel;
+    if (!PyArg_ParseTuple(args, "IiiiIIII",
+                &flags, &width, &height, &bitsPerPixel,
+                &Rmask, &Gmask, &Bmask, &Amask))
+        return NULL;
+    SDL_Surface *ss = SDL_CreateRGBSurface(flags, width, height, bitsPerPixel,
+            Rmask, Gmask, Bmask, Amask);
+    if (ss == NULL)
+        Py_RETURN_NONE;
+    return sdl_Surface_from_SDL_Surface(ss);
+}
+
 PYFUNC(Flip, "swap SDL screen buffers")
 {
     PyObject *surfo;
@@ -681,6 +696,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     /* Video */
+    PYFUNC_REF(CreateRGBSurface),
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetRGB),
