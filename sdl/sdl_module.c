@@ -623,6 +623,11 @@ PYFUNC(AddTimer,
     }
     PyObject *sdl_timerid = sdl_TimerID_build(evto);
     SDL_TimerID tid = SDL_AddTimer(interval, timer_callback, sdl_timerid);
+    if (tid == NULL)
+    {
+        Py_DECREF(sdl_timerid);
+        Py_RETURN_NONE;
+    }
     sdl_TimerID_set_TimerID(sdl_timerid, tid);
     Py_INCREF(sdl_timerid);     /* reference to be removed in RemoveTimer */
     return sdl_timerid;
