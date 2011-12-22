@@ -121,6 +121,83 @@ PYFUNC(CreateRGBSurface, "create an empty SDL.Surface")
     return sdl_Surface_from_SDL_Surface(ss);
 }
 
+PYFUNC(CreateRGBSurfaceFrom, "create an SDL.Surface from pixel data")
+{
+    PyObject *pixelso;
+    Uint32 Rmask, Gmask, Bmask, Amask;
+    int width, height, depth;
+    if (!PyArg_ParseTuple(args, "OiiiIIII",
+                &pixelso, &width, &height, &depth,
+                &Rmask, &Gmask, &Bmask, &Amask))
+        return NULL;
+    if (!PyList_Check(pixelso))
+    {
+        PyErr_SetString(PyExc_ValueError,
+                "pixels argument should be a list of integer values");
+        return NULL;
+    }
+    int n_pixels = width * height;
+    if (PyList_Size(pixelso) != n_pixels)
+    {
+        PyErr_SetString(PyExc_ValueError,
+                "pixels length is not width * height");
+        return NULL;
+    }
+    uint8_t *pixels = malloc(n_pixels * (depth / 8));
+    for (int i = 0; i < n_pixels; i++)
+    {
+        PyObject *o = PyList_GetItem(pixelso, i);
+        unsigned long v;
+        if (PyInt_Check(o))
+        {
+            v = PyInt_AsLong(o);
+        }
+        else if (PyLong_Check(o))
+        {
+            v = PyLong_AsUnsignedLong(o);
+        }
+        else
+        {
+            PyErr_SetString(PyExc_ValueError,
+                    "all pixels items must be integers");
+            free(pixels);
+            return NULL;
+        }
+        switch (depth)
+        {
+            case 8:
+                pixels[i] = v;
+                break;
+            case 15:
+            case 16:
+                ((uint16_t *) pixels)[i] = v;
+                break;
+            case 24:
+                {
+                    uint8_t *p = &pixels[i * 3];
+                    p[0] = v & 0xFF;
+                    p[1] = (v >> 8) & 0xFF;
+                    p[2] = (v >> 16) & 0xFF;
+                }
+                break;
+            case 32:
+                ((uint32_t *) pixels)[i] = v;
+                break;
+        }
+    }
+    SDL_Surface *ss = SDL_CreateRGBSurfaceFrom(
+            pixels, width, height, depth, (depth / 8) * width,
+            Rmask, Gmask, Bmask, Amask);
+    if (ss == NULL)
+    {
+        free(pixels);
+        Py_RETURN_NONE;
+    }
+    PyObject *sso = sdl_Surface_from_SDL_Surface(ss);
+    sdl_Surface_set_own_pixels_ptr(sso, 1);
+    return sso;
+}
+
 PYFUNC(Flip, "swap SDL screen buffers")
 {
     PyObject *surfo;
@@ -697,6 +774,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WasInit),
     /* Video */
     PYFUNC_REF(CreateRGBSurface),
+    PYFUNC_REF(CreateRGBSurfaceFrom),
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetRGB),
