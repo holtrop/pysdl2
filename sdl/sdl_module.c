@@ -311,6 +311,20 @@ PYFUNC(ListModes, "get a list of available screen dimensions for the "
     return lst;
 }
 
+PYFUNC(LockSurface, "lock a surface for direct pixel access")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    return Py_BuildValue("i", SDL_LockSurface(ss));
+}
+
 PYFUNC(MapRGB, "map an RGB color value to a pixel format")
 {
     PyObject *formato;
@@ -782,6 +796,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(ListModes),
+    PYFUNC_REF(LockSurface),
     PYFUNC_REF(MapRGB),
     PYFUNC_REF(MapRGBA),
     PYFUNC_REF(SetGamma),
