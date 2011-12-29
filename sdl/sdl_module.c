@@ -374,6 +374,21 @@ PYFUNC(SetVideoMode, "set a video mode with the specified width, height, "
     return sdl_Surface_from_SDL_Surface(surf);
 }
 
+PYFUNC(UnlockSurface, "unlock a previously locked surface")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_UnlockSurface(ss);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(UpdateRect, "update the given area of the screen")
 {
     PyObject *surfo;
@@ -801,6 +816,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(MapRGBA),
     PYFUNC_REF(SetGamma),
     PYFUNC_REF(SetVideoMode),
+    PYFUNC_REF(UnlockSurface),
     PYFUNC_REF(UpdateRect),
     PYFUNC_REF(UpdateRects),
     PYFUNC_REF(VideoDriverName),
