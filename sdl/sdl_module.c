@@ -220,6 +220,23 @@ PYFUNC(CreateRGBSurfaceFrom, "create an SDL.Surface from pixel data")
     return sso;
 }
 
+PYFUNC(DisplayFormat, "convert a surface to the display format")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_Surface *ss_new = SDL_DisplayFormat(ss);
+    if (ss_new == NULL)
+        Py_RETURN_NONE;
+    return sdl_Surface_from_SDL_Surface(ss_new);
+}
+
 PYFUNC(Flip, "swap SDL screen buffers")
 {
     PyObject *surfo;
@@ -827,6 +844,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(ConvertSurface),
     PYFUNC_REF(CreateRGBSurface),
     PYFUNC_REF(CreateRGBSurfaceFrom),
+    PYFUNC_REF(DisplayFormat),
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetRGB),
