@@ -368,6 +368,17 @@ PYFUNC(ListModes, "get a list of available screen dimensions for the "
     return lst;
 }
 
+PYFUNC(LoadBMP, "load a Windows BMP image file into an SDL.Surface object")
+{
+    const char *fname;
+    if (!PyArg_ParseTuple(args, "s", &fname))
+        return NULL;
+    SDL_Surface *ss = SDL_LoadBMP(fname);
+    if (ss == NULL)
+        Py_RETURN_NONE;
+    return sdl_Surface_from_SDL_Surface(ss);
+}
+
 PYFUNC(LockSurface, "lock a surface for direct pixel access")
 {
     PyObject *surfo;
@@ -871,6 +882,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(ListModes),
+    PYFUNC_REF(LoadBMP),
     PYFUNC_REF(LockSurface),
     PYFUNC_REF(MapRGB),
     PYFUNC_REF(MapRGBA),
