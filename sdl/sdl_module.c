@@ -1344,6 +1344,9 @@ initSDL(void)
     MAKE_PY_CONST(m, "FALSE", SDL_FALSE);
     MAKE_PY_CONST(m, "TRUE", SDL_TRUE);
 
+    MAKE_PY_CONST(m, "ALPHA_TRANSPARENT", SDL_ALPHA_TRANSPARENT);
+    MAKE_PY_CONST(m, "ALPHA_OPAQUE", SDL_ALPHA_OPAQUE);
+
     sdl_VersionInfo_register_type(m);
 
     sdl_Color_register_type(m);

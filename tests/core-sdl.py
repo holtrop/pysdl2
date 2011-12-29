@@ -385,6 +385,9 @@ check_const('GRAB_ON')
 check_const('FALSE')
 check_const('TRUE')
 
+check_const('ALPHA_TRANSPARENT')
+check_const('ALPHA_OPAQUE')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 
