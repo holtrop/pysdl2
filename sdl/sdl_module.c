@@ -106,6 +106,28 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(ConvertSurface,
+        "convert a surface to the same format as another surface")
+{
+    PyObject *surfo;
+    PyObject *formato;
+    Uint32 flags;
+    if (!PyArg_ParseTuple(args, "OOI", &surfo, &formato, &flags))
+        return NULL;
+    if (! (PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+            && (PyObject_IsInstance(formato, sdl_PixelFormat_get_type())) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_PixelFormat *format = sdl_PixelFormat_get_SDL_PixelFormat(formato);
+    SDL_Surface *ss_new = SDL_ConvertSurface(ss, format, flags);
+    if (ss_new == NULL)
+        Py_RETURN_NONE;
+    return sdl_Surface_from_SDL_Surface(ss_new);
+}
+
 PYFUNC(CreateRGBSurface, "create an empty SDL.Surface")
 {
     Uint32 flags, Rmask, Gmask, Bmask, Amask;
@@ -802,6 +824,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     /* Video */
+    PYFUNC_REF(ConvertSurface),
     PYFUNC_REF(CreateRGBSurface),
     PYFUNC_REF(CreateRGBSurfaceFrom),
     PYFUNC_REF(Flip),
