@@ -423,6 +423,21 @@ PYFUNC(MapRGBA, "map an RGBA color value to a pixel format")
     return Py_BuildValue("I", SDL_MapRGBA(format, r, g, b, a));
 }
 
+PYFUNC(SaveBMP, "save an SDL.Surface as a Windows BMP image file")
+{
+    PyObject *surfo;
+    const char *fname;
+    if (!PyArg_ParseTuple(args, "Os", &surfo, &fname))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    return Py_BuildValue("i", SDL_SaveBMP(ss, fname));
+}
+
 PYFUNC(SetGamma, "set the color gamma function for the display")
 {
     float r, g, b;
@@ -886,6 +901,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(LockSurface),
     PYFUNC_REF(MapRGB),
     PYFUNC_REF(MapRGBA),
+    PYFUNC_REF(SaveBMP),
     PYFUNC_REF(SetGamma),
     PYFUNC_REF(SetVideoMode),
     PYFUNC_REF(UnlockSurface),
