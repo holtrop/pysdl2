@@ -935,6 +935,18 @@ PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 }
 
 /**************************************************************************
+ * SDL Mouse Functionality                                                *
+ *************************************************************************/
+PYFUNC(WarpMouse, "set the position of the mouse cursor")
+{
+    Uint32 x, y;
+    if (!PyArg_ParseTuple(args, "II", &x, &y))
+        return NULL;
+    SDL_WarpMouse(x, y);
+    Py_RETURN_NONE;
+}
+
+/**************************************************************************
  * SDL Time Functionality                                                 *
  *************************************************************************/
 static Uint32 timer_callback(Uint32 interval, void *param)
@@ -1087,6 +1099,8 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(PushEvent),
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
+    /* Mouse */
+    PYFUNC_REF(WarpMouse),
     /* Time */
     PYFUNC_REF(AddTimer),
     PYFUNC_REF(Delay),
