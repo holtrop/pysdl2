@@ -393,6 +393,18 @@ PYFUNC(GetVideoSurface, "return the current display surface")
     return sdl_Surface_from_SDL_Surface(surf);
 }
 
+PYFUNC(GL_GetAttribute, "get the value of a special SDL/OpenGL attribute")
+{
+    Uint32 attr;
+    if (!PyArg_ParseTuple(args, "I", &attr))
+        return NULL;
+    int value;
+    int rc = SDL_GL_GetAttribute(attr, &value);
+    if (rc != 0)
+        Py_RETURN_NONE;
+    return Py_BuildValue("i", value);
+}
+
 PYFUNC(ListModes, "get a list of available screen dimensions for the "
         "given format and video flags")
 {
@@ -1015,6 +1027,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetRGBA),
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
+    PYFUNC_REF(GL_GetAttribute),
     PYFUNC_REF(ListModes),
     PYFUNC_REF(LoadBMP),
     PYFUNC_REF(LockSurface),
