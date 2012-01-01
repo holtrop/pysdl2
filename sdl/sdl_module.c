@@ -937,6 +937,14 @@ PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 /**************************************************************************
  * SDL Mouse Functionality                                                *
  *************************************************************************/
+PYFUNC(ShowCursor, "toggle whether or not the cursor is shown on the screen")
+{
+    int toggle;
+    if (!PyArg_ParseTuple(args, "i", &toggle))
+        return NULL;
+    return Py_BuildValue("i", SDL_ShowCursor(toggle));
+}
+
 PYFUNC(WarpMouse, "set the position of the mouse cursor")
 {
     Uint32 x, y;
@@ -1100,6 +1108,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
     /* Mouse */
+    PYFUNC_REF(ShowCursor),
     PYFUNC_REF(WarpMouse),
     /* Time */
     PYFUNC_REF(AddTimer),
