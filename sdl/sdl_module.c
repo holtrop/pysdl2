@@ -405,6 +405,15 @@ PYFUNC(GL_GetAttribute, "get the value of a special SDL/OpenGL attribute")
     return Py_BuildValue("i", value);
 }
 
+PYFUNC(GL_SetAttribute, "set a special SDL/OpenGL attribute")
+{
+    Uint32 attr;
+    int value;
+    if (!PyArg_ParseTuple(args, "Ii", &attr, &value))
+        return NULL;
+    return Py_BuildValue("i", SDL_GL_SetAttribute(attr, value));
+}
+
 PYFUNC(ListModes, "get a list of available screen dimensions for the "
         "given format and video flags")
 {
@@ -1028,6 +1037,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoInfo),
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(GL_GetAttribute),
+    PYFUNC_REF(GL_SetAttribute),
     PYFUNC_REF(ListModes),
     PYFUNC_REF(LoadBMP),
     PYFUNC_REF(LockSurface),
