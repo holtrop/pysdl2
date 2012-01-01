@@ -106,6 +106,33 @@ PYFUNC(WasInit, "Check which subsystems are initialized")
 /**************************************************************************
  * SDL Video Functionality                                                *
  *************************************************************************/
+PYFUNC(BlitSurface, "perform a fast blit from the source surface "
+        "to the destination surface")
+{
+    PyObject *srco, *srcrecto, *dsto, *dstrecto;
+    if (!PyArg_ParseTuple(args, "OOOO", &srco, &srcrecto, &dsto, &dstrecto))
+        return NULL;
+    if ( !(PyObject_IsInstance(srco, sdl_Surface_get_type())
+            && (PyObject_IsInstance(srcrecto, sdl_Rect_get_type())
+                || srcrecto == Py_None)
+            && PyObject_IsInstance(dsto, sdl_Surface_get_type())
+            && (PyObject_IsInstance(dstrecto, sdl_Rect_get_type())
+                || dstrecto == Py_None)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *src = sdl_Surface_get_SDL_Surface(srco);
+    SDL_Surface *dst = sdl_Surface_get_SDL_Surface(dsto);
+    SDL_Rect *srcrect = NULL;
+    SDL_Rect *dstrect = NULL;
+    if (srcrecto != Py_None)
+        srcrect = sdl_Rect_get_SDL_Rect(srcrecto);
+    if (dstrecto != Py_None)
+        dstrect = sdl_Rect_get_SDL_Rect(dstrecto);
+    return Py_BuildValue("i", SDL_BlitSurface(src, srcrect, dst, dstrect));
+}
+
 PYFUNC(ConvertSurface,
         "convert a surface to the same format as another surface")
 {
@@ -954,6 +981,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(VERSION),
     PYFUNC_REF(WasInit),
     /* Video */
+    PYFUNC_REF(BlitSurface),
     PYFUNC_REF(ConvertSurface),
     PYFUNC_REF(CreateRGBSurface),
     PYFUNC_REF(CreateRGBSurfaceFrom),
