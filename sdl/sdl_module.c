@@ -282,6 +282,26 @@ PYFUNC(DisplayFormatAlpha,
     return sdl_Surface_from_SDL_Surface(ss_new);
 }
 
+PYFUNC(FillRect, "perform a fast fill of the given rectangle with some color")
+{
+    PyObject *dsto, *dstrecto;
+    Uint32 color;
+    if (!PyArg_ParseTuple(args, "OOI", &dsto, &dstrecto, &color))
+        return NULL;
+    if ( !(PyObject_IsInstance(dsto, sdl_Surface_get_type())
+            && (PyObject_IsInstance(dstrecto, sdl_Rect_get_type())
+                || dstrecto == Py_None)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *dst = sdl_Surface_get_SDL_Surface(dsto);
+    SDL_Rect *dstrect = NULL;
+    if (dstrecto != Py_None)
+        dstrect = sdl_Rect_get_SDL_Rect(dstrecto);
+    return Py_BuildValue("i", SDL_FillRect(dst, dstrect, color));
+}
+
 PYFUNC(Flip, "swap SDL screen buffers")
 {
     PyObject *surfo;
@@ -987,6 +1007,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(CreateRGBSurfaceFrom),
     PYFUNC_REF(DisplayFormat),
     PYFUNC_REF(DisplayFormatAlpha),
+    PYFUNC_REF(FillRect),
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
     PYFUNC_REF(GetClipRect),
