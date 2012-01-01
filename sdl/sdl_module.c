@@ -284,6 +284,22 @@ PYFUNC(FreeSurface, "delete an SDL.Surface")
     Py_RETURN_NONE;
 }
 
+PYFUNC(GetClipRect, "get the clipping rectangle for a surface")
+{
+    PyObject *surfo;
+    if (!PyArg_ParseTuple(args, "O", &surfo))
+        return NULL;
+    if (!PyObject_IsInstance(surfo, sdl_Surface_get_type()))
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_Rect rect;
+    SDL_GetClipRect(ss, &rect);
+    return sdl_Rect_from_SDL_Rect(&rect);
+}
+
 PYFUNC(GetRGB, "get RGB values from a pixel in the specified pixel format")
 {
     PyObject *formato;
@@ -945,6 +961,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(DisplayFormatAlpha),
     PYFUNC_REF(Flip),
     PYFUNC_REF(FreeSurface),
+    PYFUNC_REF(GetClipRect),
     PYFUNC_REF(GetRGB),
     PYFUNC_REF(GetRGBA),
     PYFUNC_REF(GetVideoInfo),
