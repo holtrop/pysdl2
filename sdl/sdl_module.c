@@ -453,6 +453,27 @@ PYFUNC(SetAlpha, "adjust the alpha properties of a surface")
     return Py_BuildValue("i", SDL_SetAlpha(ss, flags, alpha));
 }
 
+PYFUNC(SetClipRect, "set the clipping rectangle for a surface")
+{
+    PyObject *surfo;
+    PyObject *recto;
+    if (!PyArg_ParseTuple(args, "OO", &surfo, &recto))
+        return NULL;
+    if ( !(PyObject_IsInstance(surfo, sdl_Surface_get_type())
+            && (PyObject_IsInstance(recto, sdl_Rect_get_type())
+                || recto == Py_None)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Surface *ss = sdl_Surface_get_SDL_Surface(surfo);
+    SDL_Rect *rect = NULL;
+    if (recto != Py_None)
+        rect = sdl_Rect_get_SDL_Rect(recto);
+    SDL_SetClipRect(ss, rect);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(SetColorKey,
         "set the color key (transparent pixel) in a blittable surface "
         "and RLE acceleration")
@@ -935,6 +956,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(MapRGBA),
     PYFUNC_REF(SaveBMP),
     PYFUNC_REF(SetAlpha),
+    PYFUNC_REF(SetClipRect),
     PYFUNC_REF(SetColorKey),
     PYFUNC_REF(SetGamma),
     PYFUNC_REF(SetVideoMode),
