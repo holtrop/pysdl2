@@ -9,8 +9,7 @@
 typedef struct
 {
     PyObject_HEAD
-    char owner;
-    SDL_Rect *rect;
+    SDL_Rect rect;
 } sdl_Rect;
 
 void sdl_Rect_register_type(PyObject *module);
