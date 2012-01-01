@@ -366,6 +366,7 @@ check_const('GETEVENT')
 
 check_const('IGNORE')
 check_const('ENABLE')
+check_const('DISABLE')
 check_const('QUERY')
 
 check_const('BUTTON_LMASK')
