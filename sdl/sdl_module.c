@@ -414,6 +414,12 @@ PYFUNC(GL_SetAttribute, "set a special SDL/OpenGL attribute")
     return Py_BuildValue("i", SDL_GL_SetAttribute(attr, value));
 }
 
+PYFUNC(GL_SwapBuffers, "swap OpenGL framebuffers/update display")
+{
+    SDL_GL_SwapBuffers();
+    Py_RETURN_NONE;
+}
+
 PYFUNC(ListModes, "get a list of available screen dimensions for the "
         "given format and video flags")
 {
@@ -1038,6 +1044,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(GetVideoSurface),
     PYFUNC_REF(GL_GetAttribute),
     PYFUNC_REF(GL_SetAttribute),
+    PYFUNC_REF(GL_SwapBuffers),
     PYFUNC_REF(ListModes),
     PYFUNC_REF(LoadBMP),
     PYFUNC_REF(LockSurface),
