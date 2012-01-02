@@ -126,8 +126,7 @@ sdl_Surface_getattro(sdl_Surface *self, PyObject *attr)
     }
     else if (!strcmp(aname, "clip_rect"))
     {
-        Py_INCREF(self->clip_rect);
-        return self->clip_rect;
+        return sdl_Rect_from_SDL_Rect(&self->surface->clip_rect);
     }
     else if (!strcmp(aname, "flags"))
         return Py_BuildValue("I", self->surface->flags);
@@ -161,7 +160,6 @@ sdl_Surface_dealloc(sdl_Surface *self)
     if (self->ok_to_dealloc)
     {
         Py_DECREF(self->format);
-        Py_DECREF(self->clip_rect);
         if (self->own_pixels_ptr)
             free(self->surface->pixels);
     }
@@ -227,12 +225,10 @@ PyObject *sdl_Surface_from_SDL_Surface(SDL_Surface *surface)
     if (surface == NULL)
         Py_RETURN_NONE;
     PyObject *format = sdl_PixelFormat_from_SDL_PixelFormat(surface->format);
-    PyObject *clip_rect = sdl_Rect_from_SDL_Rect(&surface->clip_rect);
     sdl_Surface *sdl_surface = PyObject_New(sdl_Surface, &sdl_SurfaceType);
     sdl_surface->surface = surface;
     sdl_surface->format = format;
     sdl_surface->pixels = (PyObject *) sdl_surface;
-    sdl_surface->clip_rect = clip_rect;
     sdl_surface->ok_to_dealloc = 1;
     sdl_surface->own_pixels_ptr = 0;
     return (PyObject *) sdl_surface;

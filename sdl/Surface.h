@@ -12,7 +12,6 @@ typedef struct
     SDL_Surface *surface;
     PyObject *format;
     PyObject *pixels;
-    PyObject *clip_rect;
     char ok_to_dealloc;
     char own_pixels_ptr;
 } sdl_Surface;
