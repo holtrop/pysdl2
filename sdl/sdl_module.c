@@ -977,6 +977,24 @@ PYFUNC(CreateCursor, "create a new mouse cursor")
     return sdl_Cursor_from_SDL_Cursor(cursor);
 }
 
+PYFUNC(SetCursor, "set the currently active mouse cursor")
+{
+    PyObject *cursoro;
+    if (!PyArg_ParseTuple(args, "O", &cursoro))
+        return NULL;
+    if ( !(PyObject_IsInstance(cursoro, sdl_Cursor_get_type())
+                || (cursoro == Py_None)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Cursor *cursor = NULL;
+    if (cursoro != Py_None)
+        cursor = sdl_Cursor_get_SDL_Cursor(cursoro);
+    SDL_SetCursor(cursor);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(ShowCursor, "toggle whether or not the cursor is shown on the screen")
 {
     int toggle;
@@ -1149,6 +1167,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WaitEvent),
     /* Mouse */
     PYFUNC_REF(CreateCursor),
+    PYFUNC_REF(SetCursor),
     PYFUNC_REF(ShowCursor),
     PYFUNC_REF(WarpMouse),
     /* Time */
