@@ -11,6 +11,7 @@
 #include "Surface.h"
 #include "keysym.h"
 #include "TimerID.h"
+#include "Cursor.h"
 
 /**************************************************************************
  * SDL Core Functionality                                                 *
@@ -937,6 +938,45 @@ PYFUNC(WaitEvent, "wait indefinitely for the next available event")
 /**************************************************************************
  * SDL Mouse Functionality                                                *
  *************************************************************************/
+PYFUNC(CreateCursor, "create a new mouse cursor")
+{
+    PyObject *datao, *masko;
+    int w, h, hot_x, hot_y;
+    if (!PyArg_ParseTuple(args, "OOiiii",
+                &datao, &masko, &w, &h, &hot_x, &hot_y))
+        return NULL;
+    if ( !(PyList_Check(datao) && PyList_Check(masko)) )
+    {
+        PyErr_SetString(PyExc_ValueError, "data and mask should be lists");
+        return NULL;
+    }
+    int sz = w * h / 8;
+    if ( !( (PyList_Size(datao) == sz) && (PyList_Size(masko) == sz) ) )
+    {
+        PyErr_SetString(PyExc_ValueError, "data and mask should be lists");
+        return NULL;
+    }
+    Uint8 *data = malloc(sz * sizeof(Uint8));
+    Uint8 *mask = malloc(sz * sizeof(Uint8));
+    for (int i = 0; i < sz; i++)
+    {
+        PyObject *d = PyList_GetItem(datao, i);
+        PyObject *m = PyList_GetItem(masko, i);
+        if ( !(PyInt_Check(d) && PyInt_Check(m)) )
+        {
+            PyErr_SetString(PyExc_ValueError,
+                    "data and mask list values should be 8-bit integers");
+            free(data);
+            free(mask);
+            return NULL;
+        }
+    }
+    SDL_Cursor *cursor = SDL_CreateCursor(data, mask, w, h, hot_x, hot_y);
+    free(data);
+    free(mask);
+    return sdl_Cursor_from_SDL_Cursor(cursor);
+}
+
 PYFUNC(ShowCursor, "toggle whether or not the cursor is shown on the screen")
 {
     int toggle;
@@ -1108,6 +1148,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(SetModState),
     PYFUNC_REF(WaitEvent),
     /* Mouse */
+    PYFUNC_REF(CreateCursor),
     PYFUNC_REF(ShowCursor),
     PYFUNC_REF(WarpMouse),
     /* Time */
