@@ -90,3 +90,13 @@ PyObject *sdl_Cursor_from_SDL_Cursor(SDL_Cursor *c)
     cursor->cursor = c;
     return (PyObject *) cursor;
 }
+
+PyObject *sdl_Cursor_get_type(void)
+{
+    return (PyObject *) &sdl_CursorType;
+}
+
+SDL_Cursor *sdl_Cursor_get_SDL_Cursor(PyObject *cursor)
+{
+    return ((sdl_Cursor *) cursor)->cursor;
+}
