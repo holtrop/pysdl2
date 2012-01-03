@@ -970,6 +970,10 @@ PYFUNC(CreateCursor, "create a new mouse cursor")
             free(mask);
             return NULL;
         }
+        int d_val = PyInt_AsLong(d);
+        int m_val = PyInt_AsLong(m);
+        data[i] = d_val;
+        mask[i] = m_val;
     }
     SDL_Cursor *cursor = SDL_CreateCursor(data, mask, w, h, hot_x, hot_y);
     free(data);
