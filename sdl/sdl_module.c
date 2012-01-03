@@ -977,6 +977,12 @@ PYFUNC(CreateCursor, "create a new mouse cursor")
     return sdl_Cursor_from_SDL_Cursor(cursor);
 }
 
+PYFUNC(GetCursor, "get the currently active mouse cursor")
+{
+    SDL_Cursor *cursor = SDL_GetCursor();
+    return sdl_Cursor_from_SDL_Cursor(cursor);
+}
+
 PYFUNC(SetCursor, "set the currently active mouse cursor")
 {
     PyObject *cursoro;
@@ -1167,6 +1173,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WaitEvent),
     /* Mouse */
     PYFUNC_REF(CreateCursor),
+    PYFUNC_REF(GetCursor),
     PYFUNC_REF(SetCursor),
     PYFUNC_REF(ShowCursor),
     PYFUNC_REF(WarpMouse),
