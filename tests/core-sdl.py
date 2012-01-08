@@ -389,6 +389,9 @@ check_const('TRUE')
 check_const('ALPHA_TRANSPARENT')
 check_const('ALPHA_OPAQUE')
 
+check_const('DEFAULT_REPEAT_DELAY')
+check_const('DEFAULT_REPEAT_INTERVAL')
+
 ver = SDL.VERSION()
 print 'SDL Compiled Version: %d.%d.%d' % (ver.major, ver.minor, ver.patch)
 
