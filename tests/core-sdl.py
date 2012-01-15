@@ -3,7 +3,7 @@
 import os
 import sys
 for d in filter(lambda x: x.startswith('lib.'), os.listdir('build')):
-    sys.path.append(os.path.sep.join([os.getcwd(), 'build', d]))
+    sys.path = [os.path.sep.join([os.getcwd(), 'build', d])] + sys.path
 import SDL
 
 def check_const(name):
