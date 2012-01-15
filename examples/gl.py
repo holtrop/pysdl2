@@ -4,16 +4,26 @@ import sys
 import SDL
 from OpenGL.GL import *
 
+def init(surf):
+    glShadeModel(GL_SMOOTH)
+    aspect = surf.w / float(surf.h)
+    glOrtho(-aspect, aspect, -1.0, 1.0, -1.0, 1.0)
+
 def redraw():
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glColor(1.0, 0.6, 0.0)
+    glClear(GL_COLOR_BUFFER_BIT)
+    glPushMatrix()
+    glRotatef(SDL.GetTicks() * 90.0 / 1000, 0, 0, 1)
     glBegin(GL_QUADS)
-    glNormal3f(0, 0, 1)
+    glColor(1.0, 1.0, 1.0)
     glVertex3f(0.5, 0.5, 0)
+    glColor(1.0, 0.0, 0.0)
     glVertex3f(-0.5, 0.5, 0)
+    glColor(0.0, 1.0, 0.0)
     glVertex3f(-0.5, -0.5, 0)
+    glColor(0.0, 0.0, 1.0)
     glVertex3f(0.5, -0.5, 0)
     glEnd()
+    glPopMatrix()
     SDL.GL_SwapBuffers()
 
 def main(argv):
@@ -22,12 +32,9 @@ def main(argv):
     SDL.GL_SetAttribute(SDL.GL_DOUBLEBUFFER, 1)
 
     screen = SDL.SetVideoMode(800, 600, 32, SDL.OPENGL)
-    SDL.WM_SetCaption("PySDL OpenGL demo", "PySDL OpenGL demo")
+    SDL.WM_SetCaption("PySDL2 OpenGL demo", "PySDL2 OpenGL demo")
 
-    glEnable(GL_LIGHTING)
-    glEnable(GL_LIGHT0)
-    glEnable(GL_COLOR_MATERIAL)
-    glShadeModel(GL_SMOOTH)
+    init(screen)
 
     timer_event = SDL.Event()
     timer_event.type = SDL.USEREVENT
