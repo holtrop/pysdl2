@@ -981,6 +981,21 @@ PYFUNC(CreateCursor, "create a new mouse cursor")
     return sdl_Cursor_from_SDL_Cursor(cursor);
 }
 
+PYFUNC(FreeCursor, "free a cursor created with SDL.CreateCursor")
+{
+    PyObject *cursoro;
+    if (!PyArg_ParseTuple(args, "O", &cursoro))
+        return NULL;
+    if ( !PyObject_IsInstance(cursoro, sdl_Cursor_get_type()) )
+    {
+        PyErr_SetString(PyExc_ValueError, "Invalid parameter");
+        return NULL;
+    }
+    SDL_Cursor *cursor = sdl_Cursor_get_SDL_Cursor(cursoro);
+    SDL_FreeCursor(cursor);
+    Py_RETURN_NONE;
+}
+
 PYFUNC(GetCursor, "get the currently active mouse cursor")
 {
     SDL_Cursor *cursor = SDL_GetCursor();
@@ -1177,6 +1192,7 @@ static PyMethodDef sdl_methods[] = {
     PYFUNC_REF(WaitEvent),
     /* Mouse */
     PYFUNC_REF(CreateCursor),
+    PYFUNC_REF(FreeCursor),
     PYFUNC_REF(GetCursor),
     PYFUNC_REF(SetCursor),
     PYFUNC_REF(ShowCursor),
