@@ -23,7 +23,7 @@ sdl_module = Extension('SDL',
         libraries = ['SDL'])
 
 setup(name = 'pysdl2',
-        version = '0.3',
+        version = '0.4',
         description = 'Python Bindings for SDL',
         author = 'Josh Holtrop',
         author_email = 'pysdl2@gmail.com',
